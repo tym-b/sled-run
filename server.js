@@ -30,6 +30,7 @@ const server = app.listen(port, (error) => {
 const io = socketio(server, { origins: '*:*' });
 
 io.on('connection', (socket) => {
-  socket.emit('news', { hello: 'world' });
-  socket.on('devicemove', console.log);
+  socket.on('devicemove', ({ position }) => {
+    io.emit('move', { position });
+  });
 });
