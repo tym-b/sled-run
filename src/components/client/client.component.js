@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
+import KalmanFilter from 'kalmanjs';
 import { throttle, map, round } from 'lodash';
 import socketio from 'socket.io-client';
 
+const ACCELERATION_MOVE_THRESHOLD = 3;
+const IGNORE_BACKWARD_ACCELERATION_SAMPLES = 20;
 
 export default class Client extends PureComponent {
   state = {
-    accelerationFactor: 0,
-    velocityFactor: 0,
+    position: 0,
   };
 
   componentDidMount() {
@@ -18,32 +20,30 @@ export default class Client extends PureComponent {
   }
 
   socket = socketio(`${window.location.hostname}:8181`);
-
-  prevPosition = 0;
-  prevTime = Date.now();
-  prevDelta = 1;
+  ignoreCounter = 0;
   currPosition = 0;
-
-  logData = throttle(data => this.setState(data), 500);
+  kalman = new KalmanFilter();
 
   recalculatePosition = (acceleration) => {
-    const time = Date.now();
-    const delta = (time - this.prevTime) / 1000;
-    const velocityFactor = (this.currPosition - this.prevPosition) * (delta / this.prevDelta);
-    const accelerationFactor = -acceleration.x * (delta + this.prevDelta) * 0.5 * delta;
-    const nextPosition = this.currPosition + velocityFactor + accelerationFactor;
+    const accFiltered = this.kalman.filter(acceleration.x);
 
-    this.logData({ velocityFactor, accelerationFactor, delta });
+    if (accFiltered > ACCELERATION_MOVE_THRESHOLD && this.ignoreCounter <= 0) {
+      this.ignoreCounter = IGNORE_BACKWARD_ACCELERATION_SAMPLES;
+      this.currPosition -= 1;
+    }
 
-    this.prevTime = time;
-    this.prevDelta = delta;
-    this.prevPosition = this.currPosition;
-    this.currPosition = nextPosition;
+    if (accFiltered < -ACCELERATION_MOVE_THRESHOLD && this.ignoreCounter <= 0) {
+      this.ignoreCounter = IGNORE_BACKWARD_ACCELERATION_SAMPLES;
+      this.currPosition += 1;
+    }
+
+    this.ignoreCounter -= 1;
   }
 
   emitPosition = throttle(() => {
+    this.setState({ position: this.currPosition });
     this.socket.emit('devicemove', { position: this.currPosition });
-  }, 100);
+  }, 50);
 
   handleDeviceMotion = ({ acceleration }) => {
     this.recalculatePosition(acceleration);
@@ -54,7 +54,7 @@ export default class Client extends PureComponent {
     return (
       <div>
         {map(this.state, (value, key) => (
-          <h1>{key}: {round(value, 3)}</h1>
+          <h1 key={key}>{key}: {round(value, 3)}</h1>
         ))}
       </div>
     );
