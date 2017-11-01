@@ -54,6 +54,7 @@
     "webpack-dev-server": "2.9.1"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^17.1.1",
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -75,6 +76,7 @@
     "kalmanjs": "^1.0.0-beta",
     "lodash": "^4.17.4",
     "null-loader": "^0.1.1",
+    "ramda": "^0.25.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
@@ -83,6 +85,7 @@
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "style-loader": "^0.18.2",
+    "three": "^0.87.1",
     "webpack": "3.6.0"
   }
 }
