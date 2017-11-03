@@ -15,7 +15,7 @@ export default class SceneComponent extends PureComponent {
     window.addEventListener('resize', this.handleResize);
 
     this.createScene();
-    this.renderScene();
+    this.update();
     this.animate();
   }
 
@@ -125,7 +125,6 @@ export default class SceneComponent extends PureComponent {
     const z = -clamped / 100 * 15 * Math.PI / 180;
 
     this.animateHeroMove(x, z);
-    this.update();
   }
 
   animateHeroMove = (xPositionValue, zRotationValue) => this.heroMoveTween
@@ -136,7 +135,6 @@ export default class SceneComponent extends PureComponent {
     this.sceneWidth = window.innerWidth;
     this.sceneHeight = window.innerHeight;
     this.renderer.setSize(this.sceneWidth, this.sceneHeight);
-    this.update();
   };
 
   handleContainerRef = (ref) => (this.container = ref);
