@@ -17,6 +17,7 @@ export default class Server extends PureComponent {
   }
 
   render() {
-    return <div className={styles.block} style={{ transform: `translateX(${this.state.position * 100}px)` }} />;
+    return <div className={styles.block} style={{ transform: `translateX(${this.state.position * 5}px)` }} />;
   }
 }
+

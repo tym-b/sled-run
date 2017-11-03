@@ -1,10 +1,6 @@
 import React, { PureComponent } from 'react';
-import KalmanFilter from 'kalmanjs';
-import { throttle, map, round } from 'lodash';
+import { map, round, throttle } from 'lodash';
 import socketio from 'socket.io-client';
-
-const ACCELERATION_MOVE_THRESHOLD = 3;
-const IGNORE_BACKWARD_ACCELERATION_SAMPLES = 20;
 
 export default class Client extends PureComponent {
   state = {
@@ -12,43 +8,23 @@ export default class Client extends PureComponent {
   };
 
   componentDidMount() {
-    window.addEventListener('devicemotion', this.handleDeviceMotion);
+    window.addEventListener('deviceorientation', this.handleOrientation, true);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('devicemotion', this.handleDeviceMotion);
+    window.removeEventListener('deviceorientation', this.handleOrientation, true);
   }
 
-  socket = socketio(`${window.location.hostname}:8181`);
-  ignoreCounter = 0;
-  currPosition = 0;
-  kalman = new KalmanFilter();
+  handleOrientation = ({ beta }) => {
+    this.setState({ position: beta });
+    this.emitControllerPosition(beta);
+  };
 
-  recalculatePosition = (acceleration) => {
-    const accFiltered = this.kalman.filter(acceleration.x);
-
-    if (accFiltered > ACCELERATION_MOVE_THRESHOLD && this.ignoreCounter <= 0) {
-      this.ignoreCounter = IGNORE_BACKWARD_ACCELERATION_SAMPLES;
-      this.currPosition -= 1;
-    }
-
-    if (accFiltered < -ACCELERATION_MOVE_THRESHOLD && this.ignoreCounter <= 0) {
-      this.ignoreCounter = IGNORE_BACKWARD_ACCELERATION_SAMPLES;
-      this.currPosition += 1;
-    }
-
-    this.ignoreCounter -= 1;
-  }
-
-  emitPosition = throttle(() => {
-    this.setState({ position: this.currPosition });
-    this.socket.emit('devicemove', { position: this.currPosition });
+  emitControllerPosition = throttle((angle) => {
+    this.socket.emit('devicemove', { position: angle });
   }, 50);
 
-  handleDeviceMotion = ({ acceleration }) => {
-    this.recalculatePosition(acceleration);
-    this.emitPosition();
-  };
+  socket = socketio(`${window.location.hostname}:8181`);
 
   render() {
     return (

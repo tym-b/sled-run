@@ -1,3 +1,6 @@
+.idea
+.DS_Store
+
 # Ignore installed node modules
 node_modules
 
