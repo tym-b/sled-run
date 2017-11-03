@@ -8,6 +8,7 @@ export default class Server extends PureComponent {
   state = {
     position: 0,
   };
+
   componentDidMount() {
     const socket = socketio(`${window.location.hostname}:8181`);
     socket.on('move', ({ position }) => {

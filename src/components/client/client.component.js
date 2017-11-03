@@ -20,8 +20,8 @@ export default class Client extends PureComponent {
     this.emitControllerPosition(beta);
   };
 
-  emitControllerPosition = throttle((beta) => {
-    this.socket.emit('devicemove', { position: beta });
+  emitControllerPosition = throttle((angle) => {
+    this.socket.emit('devicemove', { position: angle });
   }, 50);
 
   socket = socketio(`${window.location.hostname}:8181`);
