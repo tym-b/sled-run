@@ -5,19 +5,18 @@ import styles from './server.css';
 
 
 export default class Server extends PureComponent {
-    state = {
-        position: 0,
-    };
+  state = {
+    position: 0,
+  };
+  componentDidMount() {
+    const socket = socketio(`${window.location.hostname}:8181`);
+    socket.on('move', ({ position }) => {
+      this.setState({ position });
+    });
+  }
 
-    componentDidMount() {
-        const socket = socketio(`${window.location.hostname}:8181`);
-        socket.on('move', ({ position }) => {
-            this.setState({ position });
-        });
-    }
-
-    render() {
-        return <div className={styles.block} style={{ transform: `translateX(${this.state.position * 5}px)` }} />;
-    }
+  render() {
+    return <div className={styles.block} style={{ transform: `translateX(${this.state.position * 5}px)` }} />;
+  }
 }
 
