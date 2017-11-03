@@ -1,37 +1,31 @@
 import React, { PureComponent } from 'react';
 import * as THREE from 'three';
-import { cond, pipe, equals, prop, clamp } from 'ramda';
+import { clamp } from 'ramda';
 import TWEEN from '@tweenjs/tween.js';
-import debounce from 'lodash/debounce'
-
-const LEFT_ARROW_CODE = 'ArrowLeft';
-const RIGHT_ARROW_CODE = 'ArrowRight';
+import socketio from 'socket.io-client';
 
 const clampMoveValue = clamp(-100, 100);
 
 export default class SceneComponent extends PureComponent {
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('resize', this.handleResize);
+    this.socket.on('move', this.handleMove);
 
     this.createScene();
-    this.update();
-    this.animate();
+
+    requestAnimationFrame(this.loop);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
     window.removeEventListener('resize', this.handleResize);
   }
 
-  animate = time => {
-    requestAnimationFrame(this.animate);
-    TWEEN.update(time);
-  }
+  socket = socketio(`${window.location.hostname}:8181`);
 
   createScene = () => {
     this.sceneWidth = window.innerWidth;
     this.sceneHeight = window.innerHeight;
+
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(60, this.sceneWidth / this.sceneHeight, 0.1, 1000);
@@ -51,32 +45,14 @@ export default class SceneComponent extends PureComponent {
     this.configureHelpers();
   }
 
-  moveValue = 0;
-
-  handleKeyDown = pipe(
-    prop('code'),
-    cond([
-      [equals(LEFT_ARROW_CODE), () => this.handleMoveLeft()],
-      [equals(RIGHT_ARROW_CODE), () => this.handleMoveRight()],
-    ])
-  )
-
   configureHero = () => {
-    const heroGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const heroGeometry = new THREE.BoxGeometry(3, 1, 1);
     const heroMaterial = new THREE.MeshStandardMaterial({ color: 'grey' });
+
     this.hero = new THREE.Mesh(heroGeometry, heroMaterial);
     this.hero.castShadow = true;
     this.hero.receiveShadow = false;
     this.hero.position.y = 2;
-
-    this.heroMoveTween = new TWEEN.Tween({
-      xPositionValue: this.hero.position.x,
-      zRotationValue: this.hero.rotation.z
-    }).easing(TWEEN.Easing.Sinusoidal.InOut)
-      .onUpdate(({ xPositionValue, zRotationValue }) => {
-        this.hero.position.x = xPositionValue;
-        this.hero.rotation.z = zRotationValue;
-      });
 
     this.scene.add(this.hero);
   }
@@ -84,6 +60,7 @@ export default class SceneComponent extends PureComponent {
   configurePlane = () => {
     const planeGeometry = new THREE.PlaneGeometry(15, 15, 15, 15);
     const planeMaterial = new THREE.MeshStandardMaterial({ color: 'aqua' });
+
     this.ground = new THREE.Mesh(planeGeometry, planeMaterial);
     this.ground.receiveShadow = true;
     this.ground.castShadow = false;
@@ -115,21 +92,9 @@ export default class SceneComponent extends PureComponent {
     this.scene.add(heroHelper);
   }
 
-  handleMoveLeft = () => this.handlePositionChange(this.moveValue -= 50);
-
-  handleMoveRight = () => this.handlePositionChange(this.moveValue += 50);
-
-  handlePositionChange = (newValue) => {
-    const clamped = clampMoveValue(newValue);
-    const x = clamped / 100 * 2;
-    const z = -clamped / 100 * 15 * Math.PI / 180;
-
-    this.animateHeroMove(x, z);
-  }
-
-  animateHeroMove = (xPositionValue, zRotationValue) => this.heroMoveTween
-    .to({ xPositionValue, zRotationValue }, 500)
-    .start();
+  handleMove = ({ position }) => {
+    this.hero.rotation.z = -position / 180 * Math.PI;
+  };
 
   handleResize = () => {
     this.sceneWidth = window.innerWidth;
@@ -139,9 +104,10 @@ export default class SceneComponent extends PureComponent {
 
   handleContainerRef = (ref) => (this.container = ref);
 
-  update = () => {
-    requestAnimationFrame(this.update);
+  loop = (time) => {
+    requestAnimationFrame(this.loop);
     this.renderScene();
+    TWEEN.update(time);
   }
 
   renderScene = () => this.renderer.render(this.scene, this.camera);
