@@ -1,17 +1,15 @@
 import React from 'react';
-import { Switch, Route } from 'react-router';
-import { ConnectedRouter } from 'connected-react-router';
-import { history } from 'store/index';
-import Client from 'components/client/client.component';
-import Scene from 'components/scene/scene.component';
+import { BrowserRouter, Route } from 'react-router-dom';
+import Sensor from 'components/sensor/sensor.component';
+import Game from 'components/game/game.component';
 
 const routes = (
-  <ConnectedRouter history={history}>
-    <Switch>
-      <Route exact path="/client" component={Client} />
-      <Route exact path="/scene" component={Scene} />
-    </Switch>
-  </ConnectedRouter>
+  <BrowserRouter>
+    <div>
+      <Route path="/game" component={Game} />
+      <Route path="/sensor" component={Sensor} />
+    </div>
+  </BrowserRouter>
 );
 
 export default routes;

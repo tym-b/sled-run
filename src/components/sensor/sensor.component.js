@@ -3,7 +3,7 @@ import { map, round, throttle } from 'lodash';
 import { pipe, prop } from 'ramda';
 import socketio from 'socket.io-client';
 
-export default class Client extends PureComponent {
+export default class Sensor extends PureComponent {
   state = {
     position: 0,
   };

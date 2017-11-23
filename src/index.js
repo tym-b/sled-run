@@ -1,10 +1,8 @@
-import React from 'react';
+import 'babel-core/register';
+import 'babel-polyfill';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import store from 'store';
-import routes from 'routes';
 
-render(
-  <Provider store={store}>{routes}</Provider>,
-  document.getElementById('app')
-);
+import routes from './routes';
+
+
+render(routes, document.getElementById('app'));
