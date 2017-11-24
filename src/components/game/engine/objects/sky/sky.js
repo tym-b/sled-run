@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { loadTexture } from '../../utils';
+import { loadTexture } from '../../3d/utils';
 import skyTexture from './sky.jpg';
 
 
@@ -12,10 +12,6 @@ export default class Sky {
 
     geometry.scale(-1, 1, 1);
 
-    this.sky = new THREE.Mesh(geometry, material);
-  }
-
-  get threeObject() {
-    return this.sky;
+    this.threeObject = new THREE.Mesh(geometry, material);
   }
 }

@@ -6,7 +6,6 @@ import Engine from './engine';
 export default class Game extends PureComponent {
   componentDidMount() {
     this.engine = new Engine(this.renderTarget);
-    this.engine.init();
 
     window.addEventListener('resize', this.engine.updateViewport);
   }

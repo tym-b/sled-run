@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { loadObject, loadTexture } from '../../../../utils';
+import { loadObject, loadTexture } from '../../../../3d/utils';
 import santaGeometry from './santa.json';
 import santaTexture from './santa.jpg';
 
@@ -13,10 +13,6 @@ export default class Santa {
     ]);
     const material = new THREE.MeshBasicMaterial({ map: texture });
 
-    this.santa = new THREE.Mesh(geometry, material);
-  }
-
-  get threeObject() {
-    return this.santa;
+    this.threeObject = new THREE.Mesh(geometry, material);
   }
 }
