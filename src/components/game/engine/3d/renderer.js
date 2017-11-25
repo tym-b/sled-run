@@ -1,24 +1,13 @@
 import * as THREE from 'three';
 
 
-export default class Renderer {
-  constructor() {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.updateViewport();
-  }
+export default function createRenderer() {
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-  updateViewport() {
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
-  }
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio || 1);
 
-  render(scene, camera) {
-    this.renderer.render(scene.threeObject, camera.threeObject);
-  }
-
-  get domElement() {
-    return this.renderer.domElement;
-  }
+  return renderer;
 }

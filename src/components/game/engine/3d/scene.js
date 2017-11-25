@@ -1,19 +1,10 @@
 import * as THREE from 'three';
 
 
-export default class Scene {
-  constructor() {
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xffffff);
-  }
+export default function createScene() {
+  const scene = new THREE.Scene();
 
-  add(...objects) {
-    objects.forEach(({ threeObject }) => {
-      this.scene.add(threeObject);
-    });
-  }
+  scene.background = new THREE.Color(0xffffff);
 
-  get threeObject() {
-    return this.scene;
-  }
+  return scene;
 }

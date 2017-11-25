@@ -7,7 +7,8 @@
     "arrow-parens": 0,
     "jsx-a11y/href-no-hash": "off",
     "no-return-assign": 0,
-    "no-mixed-operators": 0
+    "no-mixed-operators": 0,
+    "max-len": ["error", 120]
   },
   "globals": {
     "__DEV__": true,
