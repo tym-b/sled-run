@@ -8,6 +8,7 @@ import createLight from './light';
 
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
+import createTrack from './objects/track';
 
 window.THREE = THREE;
 window.CANNON = CANNON;
@@ -34,8 +35,9 @@ export default class Engine3D {
   async load() {
     this.player = await createPlayer();
     this.sky = await createSky();
+    this.track = await createTrack();
 
-    this.scene.add(this.player, this.sky);
+    this.scene.add(this.player, this.sky, this.track);
   }
 
   updateViewport = () => {

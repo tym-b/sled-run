@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { loadTexture } from '../../3d/utils';
+import { loadTexture } from '../../utils';
 import skyTexture from './sky.jpg';
 
 

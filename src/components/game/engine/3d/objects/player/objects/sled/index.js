@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { loadObject, loadTexture } from '../../../../3d/utils';
+import { loadObject, loadTexture } from '../../../../utils';
 import sledTexture from './sled.jpg';
 import sledGeometry from './sled.json';
 
