@@ -17,11 +17,12 @@ require('cannon/tools/threejs/CannonDebugRenderer');
 
 
 export default class Engine3D {
+  scene = createScene();
+  camera = createCamera();
+  renderer = createRenderer();
+  light = createLight();
+
   constructor(renderTarget, physics) {
-    this.scene = createScene();
-    this.camera = createCamera();
-    this.renderer = createRenderer();
-    this.light = createLight();
     this.physics = physics;
 
     this.scene.add(this.light);
