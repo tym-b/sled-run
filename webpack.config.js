@@ -66,6 +66,12 @@ module.exports = {
             sourceMap: true
           }
         }]
+      }, {
+        test: /\.(jpg|png|json)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {}
+        }]
       }
     ]
   },
