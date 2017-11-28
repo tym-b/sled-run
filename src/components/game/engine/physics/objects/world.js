@@ -7,7 +7,7 @@ import { material as playerMaterial } from './player';
 export default function createWorld() {
   const world = new CANNON.World();
 
-  world.gravity.set(0, -9.82, -2);
+  world.gravity.set(0, -9.82, -5);
   world.broadphase = new CANNON.NaiveBroadphase();
 
   world.addContactMaterial(new CANNON.ContactMaterial(groundMaterial, playerMaterial, {

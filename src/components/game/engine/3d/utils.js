@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-
 const objectLoader = new THREE.JSONLoader();
 const textureLoader = new THREE.TextureLoader();
 

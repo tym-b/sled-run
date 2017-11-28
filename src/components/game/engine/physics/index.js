@@ -1,10 +1,11 @@
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
+import createRock from './objects/rock';
 
 
 export default class Physics {
-  constructor() {
+  constructor(track) {
     this.world = createWorld();
 
     this.player = createPlayer();
@@ -12,6 +13,10 @@ export default class Physics {
 
     this.ground = createGround();
     this.world.addBody(this.ground);
+
+    track.forEach((point) => {
+      this.world.addBody(createRock(point));
+    });
   }
 
   update() {

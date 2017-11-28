@@ -1,11 +1,14 @@
 import Physics from './physics';
 import Engine3D from './3d';
+import generateRocks from './trackGenerator';
 
 
 export default class Engine {
   constructor(renderTarget) {
-    this.physics = new Physics();
-    this.engine3d = new Engine3D(renderTarget, this.physics);
+    const track = generateRocks();
+
+    this.physics = new Physics(track);
+    this.engine3d = new Engine3D(renderTarget, this.physics, track);
     this.engine3d.load().then(this.init);
   }
 

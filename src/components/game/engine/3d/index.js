@@ -1,6 +1,8 @@
 import * as CANNON from 'cannon';
 import * as THREE from 'three';
 
+import { trackToRockPositions } from './utils';
+
 import createScene from './scene';
 import createCamera from './camera';
 import createRenderer from './renderer';
@@ -8,7 +10,8 @@ import createLight from './light';
 
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
-import createTrack from './objects/track';
+import createGround from './objects/ground';
+import createRock from './objects/rock';
 
 window.THREE = THREE;
 window.CANNON = CANNON;
@@ -22,9 +25,10 @@ export default class Engine3D {
   renderer = createRenderer();
   light = createLight();
 
-  constructor(renderTarget, physics) {
+  constructor(renderTarget, physics, track) {
     this.physics = physics;
 
+    this.track = track;
     this.scene.add(this.light);
     this.scene.add(this.camera);
 
@@ -36,9 +40,21 @@ export default class Engine3D {
   async load() {
     this.player = await createPlayer();
     this.sky = await createSky();
-    this.track = await createTrack();
+    this.ground = await createGround();
 
-    this.scene.add(this.player, this.sky, this.track);
+    const rockObj = await createRock();
+
+    this.track.forEach(point => {
+      const rock = rockObj.clone();
+      rock.scale.set(2, 2, 2);
+      rock.rotation.set(0, Math.random() * Math.PI, 0);
+      rock.position.copy(point);
+      this.scene.add(rock);
+    });
+
+    // this.player.add(this.camera);
+
+    this.scene.add(this.player, this.sky, this.ground);
   }
 
   updateViewport = () => {
@@ -55,6 +71,8 @@ export default class Engine3D {
 
   render = () => {
     this.updatePlayer();
+    this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
+    this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();
   };
