@@ -52,7 +52,7 @@ export default class Engine3D {
       this.scene.add(rock);
     });
 
-    // this.player.add(this.camera);
+    // this.player.add(this.ground);
 
     this.scene.add(this.player, this.sky, this.ground);
   }
