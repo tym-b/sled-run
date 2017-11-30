@@ -1,7 +1,14 @@
+import * as THREE from 'three';
+import * as CANNON from 'cannon';
+
 import Physics from './physics';
 import Engine3D from './3d';
 import generateRocks from './trackGenerator';
 
+window.THREE = THREE;
+window.CANNON = CANNON;
+
+require('cannon/tools/threejs/CannonDebugRenderer');
 
 export default class Engine {
   constructor(renderTarget) {

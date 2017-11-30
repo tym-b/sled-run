@@ -2,7 +2,8 @@ import * as THREE from 'three';
 
 import { loadObject, loadTexture } from '../../../../utils';
 import sledTexture from './sled.jpg';
-import sledGeometry from './sled.json';
+
+const sledGeometry = require('file-loader!./sled.json');
 
 
 export default async function createSled() {

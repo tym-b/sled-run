@@ -1,7 +1,4 @@
-import * as CANNON from 'cannon';
 import * as THREE from 'three';
-
-import { trackToRockPositions } from './utils';
 
 import createScene from './scene';
 import createCamera from './camera';
@@ -11,12 +8,7 @@ import createLight from './light';
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
 import createGround from './objects/ground';
-import createRock from './objects/rock';
-
-window.THREE = THREE;
-window.CANNON = CANNON;
-
-require('cannon/tools/threejs/CannonDebugRenderer');
+import createTrack from './objects/track';
 
 
 export default class Engine3D {
@@ -33,6 +25,8 @@ export default class Engine3D {
     this.scene.add(this.camera);
 
     this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    this.threeAxesHelper = new THREE.AxesHelper(100);
+    this.scene.add(this.threeAxesHelper);
 
     renderTarget.appendChild(this.renderer.domElement);
   }
@@ -41,20 +35,9 @@ export default class Engine3D {
     this.player = await createPlayer();
     this.sky = await createSky();
     this.ground = await createGround();
+    this.track = await createTrack();
 
-    const rockObj = await createRock();
-
-    this.track.forEach(point => {
-      const rock = rockObj.clone();
-      rock.scale.set(2, 2, 2);
-      rock.rotation.set(0, Math.random() * Math.PI, 0);
-      rock.position.copy(point);
-      this.scene.add(rock);
-    });
-
-    // this.player.add(this.ground);
-
-    this.scene.add(this.player, this.sky, this.ground);
+    this.scene.add(this.player, this.sky, this.track); //this.ground
   }
 
   updateViewport = () => {

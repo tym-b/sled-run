@@ -1,14 +1,14 @@
 import * as CANNON from 'cannon';
 import { clamp } from 'lodash';
 
-import createGround, { material as groundMaterial } from './objects/ground';
-import createPlayer, { material as playerMaterial } from './objects/player';
+import createGround from './objects/ground';
+import createPlayer from './objects/player';
 import createWorld from './objects/world';
-import createRock from './objects/rock';
+import createTrack from './objects/track';
 
 
 export default class Physics {
-  constructor(track) {
+  constructor() {
     this.world = createWorld();
 
     this.player = createPlayer();
@@ -17,21 +17,10 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
 
-    track.forEach((point) => {
-      this.world.addBody(createRock(point));
+    this.track = createTrack();
+    this.track.forEach((object) => {
+      this.world.addBody(object);
     });
-
-    // const rampMaterial = new CANNON.Material('rampMaterial');
-    const ramp = new CANNON.Body({
-      mass: 0,
-      position: new CANNON.Vec3(0, -10, -50),
-      shape: new CANNON.Box(new CANNON.Vec3(10, 10, 10)),
-      material: groundMaterial,
-    });
-
-    ramp.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), -0.2 * Math.PI);
-
-    this.world.addBody(ramp);
 
     this.rotation = 0;
     this.realRotation = 0;
@@ -44,13 +33,10 @@ export default class Physics {
       }
     });
 
-    window.addEventListener('keyup', ({ key }) => {
+    window.addEventListener('keyup', () => {
       this.rotation = 0;
     });
   }
-
-  // this.player.applyLocalImpulse(new CANNON.Vec3(5, 0, 0), new CANNON.Vec3(0, 0, 0));
-  // this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -0.2 * Math.PI);
 
   update() {
     this.realRotation = clamp(this.realRotation + this.rotation * 0.05, -1, 1);
