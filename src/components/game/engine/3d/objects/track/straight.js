@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
-import { rocksData, oblongRocksData } from '../../../physics/objects/track';
+import { rocksData, oblongRocksData } from '../../../physics/objects/track/straight';
 
 
-export default async function createStraightSegment(rockObject, oblongRockObject) {
+export default function createStraightSegment(rockObject, oblongRockObject) {
   const segment = new THREE.Group();
 
   rocksData.forEach(rockData => {

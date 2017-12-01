@@ -8,7 +8,7 @@ import createTrack from './objects/track';
 
 
 export default class Physics {
-  constructor() {
+  constructor(trackData) {
     this.world = createWorld();
 
     this.player = createPlayer();
@@ -17,11 +17,9 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
 
-    for (let i = 0; i < 100; i += 1) {
-      createTrack(i * 200).forEach((object) => {
-        this.world.addBody(object);
-      });
-    }
+    createTrack(trackData).forEach((object) => {
+      this.world.addBody(object);
+    });
 
     this.rotation = 0;
     this.realRotation = 0;

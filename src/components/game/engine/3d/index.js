@@ -23,13 +23,14 @@ export default class Engine3D {
   renderer = createRenderer();
   light = createLight();
 
-  constructor(renderTarget, physics) {
+  constructor(renderTarget, physics, trackData) {
     this.physics = physics;
+    this.trackData = trackData;
 
     this.scene.add(this.light);
     this.scene.add(this.camera);
 
-    this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    // this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
     // this.threeAxesHelper = new THREE.AxesHelper(100);
     // this.scene.add(this.threeAxesHelper);
 
@@ -40,9 +41,9 @@ export default class Engine3D {
     this.player = await createPlayer();
     this.sky = await createSky();
     this.ground = await createGround();
-    this.track = await createTrack();
+    this.track = await createTrack(this.trackData);
 
-    this.scene.add(this.player, this.sky, this.track); //this.ground
+    this.scene.add(this.player, this.sky, this.track, this.ground);
   }
 
   updateViewport = () => {
@@ -62,6 +63,6 @@ export default class Engine3D {
     this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
-    this.cannonDebugRenderer.update();
+    // this.cannonDebugRenderer.update();
   };
 }
