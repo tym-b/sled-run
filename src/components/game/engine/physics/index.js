@@ -17,10 +17,11 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
 
-    this.track = createTrack();
-    this.track.forEach((object) => {
-      this.world.addBody(object);
-    });
+    for (let i = 0; i < 100; i += 1) {
+      createTrack(i * 200).forEach((object) => {
+        this.world.addBody(object);
+      });
+    }
 
     this.rotation = 0;
     this.realRotation = 0;

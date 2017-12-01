@@ -1,3 +1,5 @@
+import { merge } from 'lodash';
+
 import createRock from './objects/rock';
 import createOblongRock from './objects/oblongRock';
 
@@ -17,9 +19,10 @@ export const oblongRocksData = [
   { position: { x: 41.2628, y: 51.6223 }, rotation: -90 },
 ];
 
-export default function createTrack() {
-  const rocks = rocksData.map(createRock);
-  const oblongRocks = oblongRocksData.map(createOblongRock);
+export default function createTrack(offset = 0) {
+  const addOffset = data => merge({}, data, { position: { y: data.position.y + offset } });
+  const rocks = rocksData.map(addOffset).map(createRock);
+  const oblongRocks = oblongRocksData.map(addOffset).map(createOblongRock);
 
   return [
     ...rocks,
