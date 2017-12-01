@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 
 import createScene from './scene';
 import createCamera from './camera';
@@ -10,6 +11,11 @@ import createSky from './objects/sky';
 import createGround from './objects/ground';
 import createTrack from './objects/track';
 
+window.THREE = THREE;
+window.CANNON = CANNON;
+
+require('cannon/tools/threejs/CannonDebugRenderer');
+
 
 export default class Engine3D {
   scene = createScene();
@@ -17,16 +23,15 @@ export default class Engine3D {
   renderer = createRenderer();
   light = createLight();
 
-  constructor(renderTarget, physics, track) {
+  constructor(renderTarget, physics) {
     this.physics = physics;
 
-    this.track = track;
     this.scene.add(this.light);
     this.scene.add(this.camera);
 
     this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
-    this.threeAxesHelper = new THREE.AxesHelper(100);
-    this.scene.add(this.threeAxesHelper);
+    // this.threeAxesHelper = new THREE.AxesHelper(100);
+    // this.scene.add(this.threeAxesHelper);
 
     renderTarget.appendChild(this.renderer.domElement);
   }

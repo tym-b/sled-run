@@ -1,4 +1,5 @@
 import createRock from './objects/rock';
+import createOblongRock from './objects/oblongRock';
 
 export const rocksData = [
   { position: { x: -42.0559, y: -1.27705 }, rotation: -90 },
@@ -9,6 +10,19 @@ export const rocksData = [
   { position: { x: 41.4711, y: 0 }, rotation: 90 },
 ];
 
+export const oblongRocksData = [
+  { position: { x: -40.0473, y: 49.0139 }, rotation: -90 },
+  { position: { x: -43.7789, y: 156.137 }, rotation: -90 },
+  { position: { x: 41.9085, y: 150.63 }, rotation: 90 },
+  { position: { x: 41.2628, y: 51.6223 }, rotation: -90 },
+];
+
 export default function createTrack() {
-  return rocksData.map(createRock);
+  const rocks = rocksData.map(createRock);
+  const oblongRocks = oblongRocksData.map(createOblongRock);
+
+  return [
+    ...rocks,
+    ...oblongRocks,
+  ];
 }
