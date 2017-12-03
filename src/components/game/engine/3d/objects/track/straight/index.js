@@ -1,10 +1,15 @@
 import * as THREE from 'three';
 
-import { rocksData, oblongRocksData } from '../../../physics/objects/track/straight';
+import { parseObject } from '../../../utils';
+import { rocksData, oblongRocksData } from '../../../../physics/objects/track/straight';
+import groundGeometry from './straight.json';
 
 
-export default function createStraightSegment(rockObject, oblongRockObject) {
+export default async function createStraightSegment(rockObject, oblongRockObject, groundMaterial) {
   const segment = new THREE.Group();
+  const ground = new THREE.Mesh(await parseObject(groundGeometry), groundMaterial);
+
+  segment.add(ground);
 
   rocksData.forEach(rockData => {
     const rock = rockObject.clone();

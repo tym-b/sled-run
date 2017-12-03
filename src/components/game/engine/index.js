@@ -6,7 +6,7 @@ export const TRACK_SEGMENT_STRAIGHT = 0;
 
 export default class Engine {
   constructor(renderTarget) {
-    const track = Array(150).fill(TRACK_SEGMENT_STRAIGHT);
+    const track = Array(3).fill(TRACK_SEGMENT_STRAIGHT);
 
     this.physics = new Physics(track);
     this.engine3d = new Engine3D(renderTarget, this.physics, track);

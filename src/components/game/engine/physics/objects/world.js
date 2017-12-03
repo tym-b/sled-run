@@ -19,7 +19,7 @@ export default function createWorld() {
   }));
 
   world.addContactMaterial(new CANNON.ContactMaterial(rockMaterial, playerMaterial, {
-    friction: 0,
+    friction: 0.005,
     restitution: 0.2,
   }));
 
