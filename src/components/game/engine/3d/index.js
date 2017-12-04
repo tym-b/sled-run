@@ -21,9 +21,11 @@ export default class Engine3D {
   camera = createCamera();
   renderer = createRenderer();
   light = createLight();
+  coins = [];
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
+    this.physics.onCollide = this.handleCoinCollide;
     this.trackData = trackData;
 
     this.scene.add(this.light);
@@ -58,6 +60,11 @@ export default class Engine3D {
       threeObject.quaternion.copy(cannonObject.quaternion);
     });
   }
+
+  handleCoinCollide = (e, i) => {
+    console.log('consolo', i, this.coins);
+    this.scene.remove(this.coins[i]);
+  };
 
   render = () => {
     this.updatePhysics(['player']);

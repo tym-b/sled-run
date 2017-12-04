@@ -1,10 +1,12 @@
 import * as CANNON from 'cannon';
 import { clamp } from 'lodash';
+import { times, identity } from 'ramda';
 
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
+import { material as coinMaterial } from './objects/track/objects/coin/';
 
 
 export default class Physics {
@@ -17,8 +19,15 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
 
-    createTrack(trackData).forEach((object) => {
+    createTrack(trackData).forEach((object, index) => {
       this.world.addBody(object);
+      switch (object.material.name) {
+        case coinMaterial:
+          object.addEventListener('collide', (e) => this.handleCollide(e, index));
+          break;
+        default:
+          return null;
+      }
     });
 
     this.rotation = 0;
@@ -36,6 +45,19 @@ export default class Physics {
       this.rotation = 0;
     });
   }
+
+  onCollideHandler = identity;
+
+  set onCollide(fn) {
+    this.onCollideHandler = fn;
+  }
+
+  handleCollide = (e, index) => {
+    console.log('kolizja', e, index)
+    this.coins[index].removeEventListener('collide', (e) => this.handleCollide(e, index));
+    this.world.remove(this.coins[index]);
+    this.onCollideHandler(e, index);
+  };
 
   update() {
     this.realRotation = clamp(this.realRotation + this.rotation * 0.05, -1, 1);
