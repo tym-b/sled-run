@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 
 
-export const material = new CANNON.Material('rockMaterial');
+export const material = new CANNON.Material();
 
 const boxes = [
   { size: [15, 5, 2], offset: [10, 0, -12], rotation: -0.43 },
@@ -13,9 +13,9 @@ const boxes = [
 
 export default function createRock({ position, rotation }) {
   const rock = new CANNON.Body({
-    mass: 0,
     position: new CANNON.Vec3(position.x, 0, -position.y),
     material,
+    type: CANNON.Body.STATIC,
   });
 
   boxes.forEach((box) => {

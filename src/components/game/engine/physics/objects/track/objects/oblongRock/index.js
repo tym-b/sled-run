@@ -12,9 +12,9 @@ const boxes = [
 
 export default function createOblongRock({ position, rotation }) {
   const rock = new CANNON.Body({
-    mass: 0,
     position: new CANNON.Vec3(position.x, 5, -position.y),
     material,
+    type: CANNON.Body.STATIC,
   });
 
   boxes.forEach((box) => {
