@@ -10,6 +10,7 @@ const boxes = [
   { size: [12, 5, 2], offset: [10, 0, 12], rotation: 0.42 },
 ];
 
+
 export default function createRock({ position, rotation }) {
   const rock = new CANNON.Body({
     mass: 0,
