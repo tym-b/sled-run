@@ -1,11 +1,15 @@
 import Physics from './physics';
 import Engine3D from './3d';
 
+export const TRACK_SEGMENT_STRAIGHT = 0;
+
 
 export default class Engine {
   constructor(renderTarget) {
-    this.physics = new Physics();
-    this.engine3d = new Engine3D(renderTarget, this.physics);
+    const track = Array(3).fill(TRACK_SEGMENT_STRAIGHT);
+
+    this.physics = new Physics(track);
+    this.engine3d = new Engine3D(renderTarget, this.physics, track);
     this.engine3d.load().then(this.init);
   }
 

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "webpack-dev-server --hot --port 3000 --host 0.0.0.0",
+    "start": "webpack-dev-server --hot --port 3002 --host 0.0.0.0",
     "server": "babel-watch server",
     "production": "babel-node server",
     "test": "jest",

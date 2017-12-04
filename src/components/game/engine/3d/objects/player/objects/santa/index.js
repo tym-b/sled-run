@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 import { loadObject, loadTexture } from '../../../../utils';
-import santaGeometry from './santa.json';
 import santaTexture from './santa.jpg';
+
+const santaGeometry = require('file-loader!./santa.json');
 
 
 export default async function createSanta() {

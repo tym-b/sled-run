@@ -1,13 +1,36 @@
 import * as THREE from 'three';
 
-import trackGeometry from './track.json';
-import trackTexture from './track.jpg';
-import { loadObject, loadTexture } from '../../utils';
+import createRock from './objects/rock';
+import createOblongRock from './objects/oblongRock';
+import createStraightSegment from './straight';
+import { nextOffset } from '../../../physics/objects/track/straight';
+import { loadTexture } from '../../utils';
+import groundTexture from './textures/ground.jpg';
 
+import { TRACK_SEGMENT_STRAIGHT } from '../../..';
 
-export default async function createTrack() {
-  const [geometry, texture] = await Promise.all([loadObject(trackGeometry), loadTexture(trackTexture)]);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
+export default async function createTrack(trackData) {
+  const rock = await createRock();
+  const oblongRock = await createOblongRock();
+  const groundMaterial = new THREE.MeshBasicMaterial({ map: await loadTexture(groundTexture) });
+  const straightSegment = await createStraightSegment(rock, oblongRock, groundMaterial, groundMaterial);
+  const track = new THREE.Group();
 
-  return new THREE.Mesh(geometry, material);
+  trackData.forEach((segmentType, index) => {
+    let segment;
+    const offsetY = index * nextOffset.y;
+
+    switch (segmentType) {
+      case TRACK_SEGMENT_STRAIGHT:
+        segment = straightSegment.clone();
+        break;
+      default:
+        throw new Error('Wrong segment type');
+    }
+
+    segment.position.setZ(-offsetY);
+    track.add(segment);
+  });
+
+  return track;
 }

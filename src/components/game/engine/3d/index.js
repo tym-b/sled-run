@@ -1,5 +1,5 @@
-import * as CANNON from 'cannon';
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 
 import createScene from './scene';
 import createCamera from './camera';
@@ -22,8 +22,9 @@ export default class Engine3D {
   renderer = createRenderer();
   light = createLight();
 
-  constructor(renderTarget, physics) {
+  constructor(renderTarget, physics, trackData) {
     this.physics = physics;
+    this.trackData = trackData;
 
     this.scene.add(this.light);
     this.scene.add(this.camera);
@@ -36,7 +37,7 @@ export default class Engine3D {
   async load() {
     this.player = await createPlayer();
     this.sky = await createSky();
-    this.track = await createTrack();
+    this.track = await createTrack(this.trackData);
 
     this.scene.add(this.player, this.sky, this.track);
   }
@@ -55,6 +56,8 @@ export default class Engine3D {
 
   render = () => {
     this.updatePlayer();
+    this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
+    this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();
   };
