@@ -59,10 +59,9 @@ export default class Engine3D {
       threeObject.position.copy(cannonObject.position);
       threeObject.quaternion.copy(cannonObject.quaternion);
     });
-  }
+  };
 
   handleCoinCollide = (e, i) => {
-    console.log('consolo', i, this.coins);
     this.scene.remove(this.coins[i]);
   };
 
