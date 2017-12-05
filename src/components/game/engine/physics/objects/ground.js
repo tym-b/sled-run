@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 
 
-export const material = new CANNON.Material('groundMaterial');
+export const material = new CANNON.Material();
 
 export default function createGround() {
   const ground = new CANNON.Body({

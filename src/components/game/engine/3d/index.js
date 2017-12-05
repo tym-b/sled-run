@@ -49,13 +49,18 @@ export default class Engine3D {
     this.camera.updateProjectionMatrix();
   };
 
-  updatePlayer = () => {
-    this.player.position.copy(this.physics.player.position);
-    this.player.quaternion.copy(this.physics.player.quaternion);
+  updatePhysics = (keys) => {
+    keys.forEach((key) => {
+      const cannonObject = this.physics[key];
+      const threeObject = this[key];
+
+      threeObject.position.copy(cannonObject.position);
+      threeObject.quaternion.copy(cannonObject.quaternion);
+    });
   }
 
   render = () => {
-    this.updatePlayer();
+    this.updatePhysics(['player']);
     this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
