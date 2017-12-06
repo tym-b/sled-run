@@ -1,5 +1,4 @@
 import * as CANNON from 'cannon';
-import { clamp } from 'lodash';
 
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
@@ -26,9 +25,9 @@ export default class Physics {
 
     window.addEventListener('keydown', ({ key }) => {
       if (key === 'ArrowLeft') {
-        this.rotation = -1;
-      } else if (key === 'ArrowRight') {
         this.rotation = 1;
+      } else if (key === 'ArrowRight') {
+        this.rotation = -1;
       }
     });
 
@@ -38,9 +37,9 @@ export default class Physics {
   }
 
   update() {
-    this.realRotation = clamp(this.realRotation + this.rotation * 0.05, -1, 1);
-    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, -0.5, -0.5), 0.2 * Math.PI * this.realRotation);
-    this.player.applyLocalForce(new CANNON.Vec3(this.realRotation * 60, 0, -150), new CANNON.Vec3(0, 0, 0));
+    this.realRotation = this.realRotation + this.rotation * 0.03;
+    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
+    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -1500), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
   }
 }

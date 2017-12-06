@@ -39,6 +39,11 @@ export default class Engine3D {
     this.sky = await createSky();
     this.track = await createTrack(this.trackData);
 
+    // this.camera.position.set(0, 500, -100);
+    // this.camera.lookAt(new THREE.Vector3(0, 0, -100));
+    this.camera.position.set(0, 5, 15);
+    this.player.add(this.camera);
+
     this.scene.add(this.player, this.sky, this.track);
   }
 
@@ -61,7 +66,6 @@ export default class Engine3D {
 
   render = () => {
     this.updatePhysics(['player']);
-    this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();

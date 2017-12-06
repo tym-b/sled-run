@@ -1,12 +1,22 @@
 import Physics from './physics';
 import Engine3D from './3d';
+import createTrack, {
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_LEFT,
+  TRACK_SEGMENT_RIGHT,
+} from './track';
 
-export const TRACK_SEGMENT_STRAIGHT = 0;
-
+const TRACK = [
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_LEFT,
+  TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+];
 
 export default class Engine {
   constructor(renderTarget) {
-    const track = Array(3).fill(TRACK_SEGMENT_STRAIGHT);
+    const track = createTrack(TRACK);
 
     this.physics = new Physics(track);
     this.engine3d = new Engine3D(renderTarget, this.physics, track);
