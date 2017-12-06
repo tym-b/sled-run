@@ -37,9 +37,9 @@ export default class Physics {
   }
 
   update() {
-    this.realRotation = this.realRotation + this.rotation * 0.03;
+    this.realRotation = this.realRotation + this.rotation * 0.015;
     this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
-    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -1500), new CANNON.Vec3(0, 0, 0));
+    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -700), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
   }
 }

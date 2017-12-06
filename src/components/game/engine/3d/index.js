@@ -29,7 +29,7 @@ export default class Engine3D {
     this.scene.add(this.light);
     this.scene.add(this.camera);
 
-    this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    // this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
 
     renderTarget.appendChild(this.renderer.domElement);
   }
@@ -68,6 +68,6 @@ export default class Engine3D {
     this.updatePhysics(['player']);
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
-    this.cannonDebugRenderer.update();
+    // this.cannonDebugRenderer.update();
   };
 }

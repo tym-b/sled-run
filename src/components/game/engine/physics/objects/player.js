@@ -9,7 +9,7 @@ export default function createPlayer() {
     position: new CANNON.Vec3(0, 5, 0),
     shape: new CANNON.Sphere(1.5),
     fixedRotation: true,
-    linearDamping: 0.999999,
+    linearDamping: 0.999,
     material,
   });
 
