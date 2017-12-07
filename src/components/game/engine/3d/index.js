@@ -21,7 +21,7 @@ export default class Engine3D {
   camera = createCamera();
   renderer = createRenderer();
   light = createLight();
-  coins = [];
+  objects = [];
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
@@ -42,6 +42,13 @@ export default class Engine3D {
     this.track = await createTrack(this.trackData);
 
     this.scene.add(this.player, this.sky, this.track);
+
+    console.log(this.physics.objects)
+    // this.track.children.forEach((child) => {
+    //   child.children.forEach((obj) => {
+    //     this.objects.push(obj);
+    //   });
+    // });
   }
 
   updateViewport = () => {
@@ -62,12 +69,15 @@ export default class Engine3D {
   };
 
   handleCoinCollide = (e, i) => {
-    this.scene.remove(this.coins[i]);
+    console.log(this.physics.objects[i])
+    // console.log(i,this.objects[i])
+    // this.scene.remove(this.objects[i]);
+      this.track.remove(this.physics.objects[i]);
   };
 
   render = () => {
     this.updatePhysics(['player']);
-    this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 15)));
+    this.camera.position.copy(this.player.position.clone().add(new THREE.Vector3(0, 5, 50)));
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();

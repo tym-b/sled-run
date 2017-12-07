@@ -15,7 +15,7 @@ export default async function createStraightSegment(objects, groundMaterial) {
     const object = objects[type].clone();
 
     object.rotation.y = rotation / 180 * Math.PI;
-    object.position.set(position.x, 0, -position.y);
+    object.position.set(position.x, position.z || 0, -position.y);
 
     segment.add(object);
   });

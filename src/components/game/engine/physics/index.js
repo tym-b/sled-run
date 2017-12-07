@@ -23,6 +23,7 @@ export default class Physics {
     createTrack(trackData).forEach((object, index) => {
       this.world.addBody(object);
       this.objects.push(object);
+      console.log(index)
 
       switch (object.material.name) {
         case COIN_MATERIAL:
@@ -56,6 +57,7 @@ export default class Physics {
   }
 
   handleCollide = (e, index) => {
+    console.log(index, this.objects[index])
     this.objects[index].removeEventListener('collide', (e) => this.handleCollide(e, index));
     this.world.remove(this.objects[index]);
     this.onCollideHandler(e, index);

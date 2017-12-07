@@ -9,6 +9,7 @@ export default function createCoin({ position }) {
     mass: 0,
     position: new CANNON.Vec3(position.x, 2, -position.y),
     shape: new CANNON.Sphere(0.7),
+    type: CANNON.Body.STATIC,
     material,
   });
 
