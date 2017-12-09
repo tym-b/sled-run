@@ -8,7 +8,7 @@ import createLight from './light';
 
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
-import createTrack from './objects/track';
+import createTrack, { createBoosters } from './objects/track';
 
 window.THREE = THREE;
 window.CANNON = CANNON;
@@ -40,15 +40,13 @@ export default class Engine3D {
     this.player = await createPlayer();
     this.sky = await createSky();
     this.track = await createTrack(this.trackData);
+    this.boosters = await createBoosters(this.trackData);
 
     this.scene.add(this.player, this.sky, this.track);
 
-    console.log(this.physics.objects)
-    // this.track.children.forEach((child) => {
-    //   child.children.forEach((obj) => {
-    //     this.objects.push(obj);
-    //   });
-    // });
+    this.boosters.forEach((booster) => {
+      this.scene.add(booster);
+    });
   }
 
   updateViewport = () => {
@@ -69,10 +67,7 @@ export default class Engine3D {
   };
 
   handleCoinCollide = (e, i) => {
-    console.log(this.physics.objects[i])
-    // console.log(i,this.objects[i])
-    // this.scene.remove(this.objects[i]);
-      this.track.remove(this.physics.objects[i]);
+    this.scene.remove(this.boosters[i]);
   };
 
   render = () => {

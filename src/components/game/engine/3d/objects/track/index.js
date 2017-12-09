@@ -3,6 +3,7 @@ import { invokeMap, call, zipObject, keys } from 'lodash';
 
 import objectCreators from './objects';
 import createStraightSegment from './straight';
+import createBoostersForStraightSegment from './straight/boosters';
 import { nextOffset } from '../../../physics/objects/track/straight';
 import { loadTexture } from '../../utils';
 import groundTexture from './textures/ground.jpg';
@@ -32,4 +33,34 @@ export default async function createTrack(trackData) {
   });
 
   return track;
+}
+
+const changeBoostersPosition = (boosters, offset) => {
+  const tmpBoosts = [];
+
+  boosters.forEach((booster) => {
+    if (offset) {
+      booster.position.setZ(booster.position.z - nextOffset.y);
+    }
+    tmpBoosts.push(booster.clone());
+  });
+  return tmpBoosts;
+};
+
+
+export async function createBoosters(boostersData) {
+  const objectInstances = zipObject(keys(objectCreators), await Promise.all(invokeMap(objectCreators, call, '')));
+  const straightBoosters = await createBoostersForStraightSegment(objectInstances);
+  let boosters = [];
+
+  boostersData.forEach((segmentType, index) => {
+    switch (segmentType) {
+      case TRACK_SEGMENT_STRAIGHT:
+        boosters = boosters.concat(changeBoostersPosition(straightBoosters, index));
+        break;
+      default:
+        throw new Error('Wrong segment type');
+    }
+  });
+  return boosters;
 }

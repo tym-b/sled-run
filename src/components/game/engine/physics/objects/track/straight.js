@@ -14,10 +14,6 @@ export const objectsData = [
   { type: 'tree', position: { x: 20, y: 5 }, rotation: 90 },
   { type: 'tree', position: { x: -15, y: 80 }, rotation: 0 },
   { type: 'tree', position: { x: 3, y: 150 }, rotation: -90 },
-  { type: 'coin', position: { x: 1, z: 2, y: 20 }, rotation: 0 },
-  { type: 'coin', position: { x: 2, z: 2, y: 40 }, rotation: 0 },
-  { type: 'coin', position: { x: 3, z: 2, y: 60 }, rotation: 0 },
-  { type: 'coin', position: { x: 4, z: 2, y: 80 }, rotation: 0 },
 ];
 
 export const nextOffset = { x: 0, y: 200 };

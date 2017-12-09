@@ -5,7 +5,7 @@ import { identity } from 'ramda';
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
-import createTrack from './objects/track';
+import createTrack, { createTrackBoosters } from './objects/track';
 import { COIN_MATERIAL } from './objects/track/objects/coin/';
 
 
@@ -20,7 +20,11 @@ export default class Physics {
     this.world.addBody(this.ground);
     this.objects = [];
 
-    createTrack(trackData).forEach((object, index) => {
+    createTrack(trackData).forEach((object) => {
+      this.world.addBody(object);
+    });
+
+    createTrackBoosters(trackData).forEach((object, index) => {
       this.world.addBody(object);
       this.objects.push(object);
       console.log(index)

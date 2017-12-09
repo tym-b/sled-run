@@ -13,6 +13,8 @@ export default function createCoin({ position }) {
     material,
   });
 
+  coin.userData = { offset: 0 };
+
   coin.collisionResponse = false;
 
   return coin;
