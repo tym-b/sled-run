@@ -1,19 +1,18 @@
 import * as CANNON from 'cannon';
 
+import { material } from '../rock';
 
-export const material = new CANNON.Material();
 
 const boxes = [
-  { size: [14, 6, 2], offset: [9, 3, -12.5], rotation: -0.43 },
-  { size: [11, 6, 2], offset: [-12, 3, -13], rotation: 0.52 },
-  { size: [12, 6, 2], offset: [-10, 3, 12], rotation: -0.43 },
-  { size: [12, 6, 2], offset: [10, 3, 12], rotation: 0.42 },
-  { size: [2, 6, 9], offset: [20.5, 3, 0], rotation: 0 },
-  { size: [2, 6, 9], offset: [-20.5, 3, 0], rotation: 0 },
+  { size: [11, 6, 2], offset: [7, 3, -7.5], rotation: -0.41 },
+  { size: [7.5, 6, 2], offset: [-8, 3, -8], rotation: 0.48 },
+  { size: [8, 6, 2], offset: [-7, 3, 8], rotation: -0.4 },
+  { size: [10, 6, 2], offset: [8, 3, 8], rotation: 0.35 },
+  { size: [2, 6, 6], offset: [16, 3, 1], rotation: 0 },
+  { size: [2, 6, 7], offset: [-13, 3, 0.5], rotation: 0.05 },
 ];
 
-
-export default function createRock({ position, rotation, clockwiseTurns }) {
+export default function createSmallRock({ position, rotation, clockwiseTurns }) {
   const rock = new CANNON.Body({
     position: new CANNON.Vec3(position.x, 0, -position.y),
     material,

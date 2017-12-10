@@ -1,5 +1,4 @@
 import * as CANNON from 'cannon';
-import { clamp } from 'lodash';
 import { identity } from 'ramda';
 
 import createGround from './objects/ground';
@@ -44,9 +43,9 @@ export default class Physics {
 
     window.addEventListener('keydown', ({ key }) => {
       if (key === 'ArrowLeft') {
-        this.rotation = -1;
-      } else if (key === 'ArrowRight') {
         this.rotation = 1;
+      } else if (key === 'ArrowRight') {
+        this.rotation = -1;
       }
     });
 
@@ -85,14 +84,13 @@ export default class Physics {
       timeoutId = this.resetSpeedBooster();
     }
 
-
     this.onCollideHandler(e, index);
   };
 
   update() {
-    this.realRotation = clamp(this.realRotation + this.rotation * 0.05, -1, 1);
-    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, -0.5, -0.5), 0.2 * Math.PI * this.realRotation);
-    this.player.applyLocalForce(new CANNON.Vec3(this.realRotation * 60, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
+    this.realRotation = this.realRotation + this.rotation * 0.015;
+    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
+    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
     this.clearWorld();
   }
