@@ -14,9 +14,9 @@ export default function createPlayer() {
   });
 
   player.userData = {
-    initialSpeed: 150,
-    speed: 150,
-    speedBooster: 200,
+    initialSpeed: 700,
+    speed: 700,
+    speedBooster: 1000,
   };
 
   return player;

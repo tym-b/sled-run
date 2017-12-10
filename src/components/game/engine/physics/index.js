@@ -11,6 +11,7 @@ let timeoutId = null;
 
 export default class Physics {
   constructor(trackData) {
+    this.trackData = trackData;
     this.world = createWorld();
 
     this.player = createPlayer();
@@ -23,19 +24,6 @@ export default class Physics {
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
-    });
-
-    createTrackBoosters(trackData).forEach((object, index) => {
-      this.world.addBody(object);
-      this.objects.push(object);
-
-      switch (object.material.name) {
-        case COIN_MATERIAL:
-          object.addEventListener('collide', (e) => this.handleCollide(e, index));
-          break;
-        default:
-          return null;
-      }
     });
 
     this.rotation = 0;
@@ -54,6 +42,23 @@ export default class Physics {
     });
   }
 
+  async loadBoosters() {
+    const trackBoosters = await createTrackBoosters(this.trackData);
+
+    trackBoosters.forEach((object, index) => {
+      this.world.addBody(object);
+      this.objects.push(object);
+
+      switch (object.material.name) {
+        case COIN_MATERIAL:
+          object.addEventListener('collide', (e) => this.handleCollide(e, index));
+          break;
+        default:
+          return null;
+      }
+    });
+  }
+
   onCollideHandler = identity;
 
   set onCollide(fn) {
@@ -62,7 +67,7 @@ export default class Physics {
 
   resetSpeedBooster = () =>
     setTimeout(() => {
-      this.player.userData.speed = 150;
+      this.player.userData.speed = this.player.userData.initialSpeed;
       timeoutId = null;
     }, 2000);
 

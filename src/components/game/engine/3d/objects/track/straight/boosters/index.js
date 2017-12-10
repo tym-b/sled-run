@@ -1,10 +1,10 @@
 import { objectsData } from '../../../../../physics/objects/track/straightBoosters';
 
 
-export default async function createBoostersForStraightSegment(objects) {
+export default async function createBoostersForSegment(objects, segmentType) {
   const boosters = [];
 
-  objectsData.forEach(({ type, position, rotation }) => {
+  objectsData[segmentType].forEach(({ type, position, rotation }) => {
     const object = objects[type].clone();
 
     object.rotation.y = rotation / 180 * Math.PI;
