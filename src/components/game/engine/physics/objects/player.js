@@ -13,5 +13,11 @@ export default function createPlayer() {
     material,
   });
 
+  player.userData = {
+    initialSpeed: 150,
+    speed: 150,
+    speedBooster: 200,
+  };
+
   return player;
 }

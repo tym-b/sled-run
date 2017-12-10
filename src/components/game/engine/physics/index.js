@@ -8,6 +8,7 @@ import createWorld from './objects/world';
 import createTrack, { createTrackBoosters } from './objects/track';
 import { COIN_MATERIAL } from './objects/track/objects/coin/';
 
+let timeoutId = null;
 
 export default class Physics {
   constructor(trackData) {
@@ -19,6 +20,7 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
     this.objects = [];
+    this.objectsToRemove = [];
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
@@ -27,7 +29,6 @@ export default class Physics {
     createTrackBoosters(trackData).forEach((object, index) => {
       this.world.addBody(object);
       this.objects.push(object);
-      console.log(index)
 
       switch (object.material.name) {
         case COIN_MATERIAL:
@@ -60,17 +61,39 @@ export default class Physics {
     this.onCollideHandler = fn;
   }
 
+  resetSpeedBooster = () =>
+    setTimeout(() => {
+      this.player.userData.speed = 150;
+      timeoutId = null;
+    }, 2000);
+
+  clearWorld = () => {
+    this.objectsToRemove.forEach((objectToRemove) => {
+      this.world.remove(this.objects[objectToRemove]);
+    });
+    this.objectsToRemove = [];
+  };
+
   handleCollide = (e, index) => {
-    console.log(index, this.objects[index])
-    this.objects[index].removeEventListener('collide', (e) => this.handleCollide(e, index));
-    this.world.remove(this.objects[index]);
+    this.objects[index].removeEventListener('collide', (ev) => this.handleCollide(ev, index));
+    this.objectsToRemove.push(index);
+    this.player.userData.speed = this.player.userData.speedBooster;
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = this.resetSpeedBooster();
+    } else {
+      timeoutId = this.resetSpeedBooster();
+    }
+
+
     this.onCollideHandler(e, index);
   };
 
   update() {
     this.realRotation = clamp(this.realRotation + this.rotation * 0.05, -1, 1);
     this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, -0.5, -0.5), 0.2 * Math.PI * this.realRotation);
-    this.player.applyLocalForce(new CANNON.Vec3(this.realRotation * 60, 0, -150), new CANNON.Vec3(0, 0, 0));
+    this.player.applyLocalForce(new CANNON.Vec3(this.realRotation * 60, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
+    this.clearWorld();
   }
 }
