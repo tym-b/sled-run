@@ -3,31 +3,28 @@ import { invokeMap, call, zipObject, keys } from 'lodash';
 
 import objectCreators from './objects';
 import createStraightSegment from './straight';
-import { nextOffset } from '../../../physics/objects/track/straight';
+import createLeftSegment from './left';
+import createRightSegment from './right';
 import { loadTexture } from '../../utils';
 import groundTexture from './textures/ground.jpg';
 
-import { TRACK_SEGMENT_STRAIGHT } from '../../..';
-
 export default async function createTrack(trackData) {
-  const objectInstances = zipObject(keys(objectCreators), await Promise.all(invokeMap(objectCreators, call, '')));
-  const groundMaterial = new THREE.MeshBasicMaterial({ map: await loadTexture(groundTexture) });
-  const straightSegment = await createStraightSegment(objectInstances, groundMaterial);
+  const objects = zipObject(keys(objectCreators), await Promise.all(invokeMap(objectCreators, call, '')));
+  const materials = {
+    ground: new THREE.MeshBasicMaterial({ map: await loadTexture(groundTexture) }),
+  };
+  const segments = {
+    straight: await createStraightSegment(objects, materials),
+    left: await createLeftSegment(objects, materials),
+    right: await createRightSegment(objects, materials),
+  };
   const track = new THREE.Group();
 
-  trackData.forEach((segmentType, index) => {
-    let segment;
-    const offsetY = index * nextOffset.y;
+  trackData.forEach(({ type, offset, clockwiseTurns }) => {
+    const segment = segments[type].clone();
 
-    switch (segmentType) {
-      case TRACK_SEGMENT_STRAIGHT:
-        segment = straightSegment.clone();
-        break;
-      default:
-        throw new Error('Wrong segment type');
-    }
-
-    segment.position.setZ(-offsetY);
+    segment.position.set(offset.x, 0, -offset.y);
+    segment.rotation.set(0, -clockwiseTurns / 2 * Math.PI, 0);
     track.add(segment);
   });
 

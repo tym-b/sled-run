@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
 import { parseObject } from '../../../utils';
-import { objectsData } from '../../../../segmentsData/straight';
-import groundGeometry from './straight.json';
+import { objectsData } from '../../../../segmentsData/right';
+import groundGeometry from './right.json';
 
 
 export default async function createStraightSegment(objects, materials) {

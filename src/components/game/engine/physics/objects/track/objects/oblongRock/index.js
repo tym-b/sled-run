@@ -10,7 +10,7 @@ const boxes = [
 ];
 
 
-export default function createOblongRock({ position, rotation }) {
+export default function createOblongRock({ position, rotation, clockwiseTurns }) {
   const rock = new CANNON.Body({
     position: new CANNON.Vec3(position.x, 5, -position.y),
     material,
@@ -28,7 +28,7 @@ export default function createOblongRock({ position, rotation }) {
     );
   });
 
-  rock.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotation / 180 * Math.PI);
+  rock.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotation / 180 * Math.PI + clockwiseTurns / 2 * Math.PI);
 
   return rock;
 }

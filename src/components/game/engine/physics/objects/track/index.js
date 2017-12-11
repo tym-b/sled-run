@@ -1,17 +1,23 @@
 import { flatten } from 'lodash';
-import createStraightSegment, { nextOffset } from './straight';
-import { TRACK_SEGMENT_STRAIGHT } from '../../..';
+
+import objectCreators from './objects';
+import { turnClockwise } from '../../../track';
 
 
 export default function createTrack(trackData) {
-  return flatten(trackData.map((segmentType, index) => {
-    const offsetY = index * nextOffset.y;
+  return flatten(trackData
+    .map(({ objectsData, offset, clockwiseTurns }) => objectsData
+      .map(data => {
+        const realPositon = turnClockwise(data.position, clockwiseTurns);
 
-    switch (segmentType) {
-      case TRACK_SEGMENT_STRAIGHT:
-        return createStraightSegment(offsetY);
-      default:
-        return [];
-    }
-  }));
+        return {
+          ...data,
+          position: {
+            x: realPositon.x + offset.x,
+            y: realPositon.y + offset.y,
+          },
+          clockwiseTurns,
+        };
+      })))
+    .map(data => objectCreators[data.type](data));
 }

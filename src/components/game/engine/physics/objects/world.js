@@ -9,7 +9,7 @@ import { material as treeMaterial } from './track/objects/tree';
 export default function createWorld() {
   const world = new CANNON.World();
 
-  world.gravity.set(0, -9.8, 0);
+  world.gravity.set(0, -50, 0);
   world.broadphase = new CANNON.NaiveBroadphase();
 
   world.addContactMaterial(new CANNON.ContactMaterial(groundMaterial, playerMaterial, {
