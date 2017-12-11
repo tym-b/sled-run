@@ -6,6 +6,7 @@ import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack, { createTrackBoosters } from './objects/track';
 import { COIN_MATERIAL } from './objects/track/objects/coin/';
+import { SNOWDRIFT_MATERIAL } from './objects/track/objects/snowdrift/';
 
 let timeoutId = null;
 
@@ -51,7 +52,10 @@ export default class Physics {
 
       switch (object.material.name) {
         case COIN_MATERIAL:
-          object.addEventListener('collide', (e) => this.handleCollide(e, index));
+          object.addEventListener('collide', (e) => this.handleCoinCollide(e, index));
+          break;
+        case SNOWDRIFT_MATERIAL:
+          object.addEventListener('collide', (e) => this.handleSnowDriftCollide(e, index));
           break;
         default:
           return null;
@@ -59,17 +63,15 @@ export default class Physics {
     });
   }
 
-  onCollideHandler = identity;
+  onCoinCollideHandler = identity;
 
-  set onCollide(fn) {
-    this.onCollideHandler = fn;
+  set onCoinCollide(fn) {
+    this.onCoinCollideHandler = fn;
   }
 
-  resetSpeedBooster = () =>
-    setTimeout(() => {
-      this.player.userData.speed = this.player.userData.initialSpeed;
-      timeoutId = null;
-    }, 2000);
+  set onSnowDriftCollide(fn) {
+    this.onCollideHandler = fn;
+  }
 
   clearWorld = () => {
     this.objectsToRemove.forEach((objectToRemove) => {
@@ -78,10 +80,17 @@ export default class Physics {
     this.objectsToRemove = [];
   };
 
-  handleCollide = (e, index) => {
-    this.objects[index].removeEventListener('collide', (ev) => this.handleCollide(ev, index));
+  resetSpeedBooster = () =>
+    setTimeout(() => {
+      this.player.userData.speed = this.player.userData.initialSpeed;
+      timeoutId = null;
+    }, this.player.userData.speedBoosterTime);
+
+  handleCoinCollide = (e, index) => {
+    this.objects[index].removeEventListener('collide', (ev) => this.handleCoinCollide(ev, index));
     this.objectsToRemove.push(index);
     this.player.userData.speed = this.player.userData.speedBooster;
+
     if (timeoutId) {
       clearTimeout(timeoutId);
       timeoutId = this.resetSpeedBooster();
@@ -89,7 +98,22 @@ export default class Physics {
       timeoutId = this.resetSpeedBooster();
     }
 
-    this.onCollideHandler(e, index);
+    this.onCoinCollideHandler(e, index);
+  };
+
+  handleCoinCollide = (e, index) => {
+    this.objects[index].removeEventListener('collide', (ev) => this.handleCoinCollide(ev, index));
+    this.objectsToRemove.push(index);
+    this.player.userData.speed = this.player.userData.speedBooster;
+
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = this.resetSpeedBooster();
+    } else {
+      timeoutId = this.resetSpeedBooster();
+    }
+
+    this.onCoinCollideHandler(e, index);
   };
 
   update() {

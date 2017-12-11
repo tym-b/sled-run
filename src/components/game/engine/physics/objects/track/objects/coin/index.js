@@ -1,6 +1,5 @@
 import * as CANNON from 'cannon';
 
-
 export const COIN_MATERIAL = 'coinMaterial';
 export const material = new CANNON.Material(COIN_MATERIAL);
 
@@ -12,8 +11,6 @@ export default function createCoin({ position }) {
     type: CANNON.Body.STATIC,
     material,
   });
-
-  coin.userData = { offset: 0 };
 
   coin.collisionResponse = false;
 
