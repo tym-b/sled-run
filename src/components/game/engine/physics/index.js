@@ -65,12 +65,14 @@ export default class Physics {
 
   onCoinCollideHandler = identity;
 
+  onSnowDriftCollide = identity;
+
   set onCoinCollide(fn) {
     this.onCoinCollideHandler = fn;
   }
 
   set onSnowDriftCollide(fn) {
-    this.onCollideHandler = fn;
+    this.onSnowDriftHandler = fn;
   }
 
   clearWorld = () => {
@@ -101,19 +103,12 @@ export default class Physics {
     this.onCoinCollideHandler(e, index);
   };
 
-  handleCoinCollide = (e, index) => {
-    this.objects[index].removeEventListener('collide', (ev) => this.handleCoinCollide(ev, index));
+    handleSnowDriftCollide = (e, index) => {
+    this.objects[index].removeEventListener('collide', (ev) => this.handleSnowDriftCollide(ev, index));
     this.objectsToRemove.push(index);
-    this.player.userData.speed = this.player.userData.speedBooster;
+    this.player.applyLocalImpulse(new CANNON.Vec3(0, 0, 150), new CANNON.Vec3(0, 0, 0));
 
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = this.resetSpeedBooster();
-    } else {
-      timeoutId = this.resetSpeedBooster();
-    }
-
-    this.onCoinCollideHandler(e, index);
+    this.onSnowDriftCollide(e, index);
   };
 
   update() {
