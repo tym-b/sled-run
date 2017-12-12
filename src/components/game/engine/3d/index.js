@@ -71,8 +71,8 @@ export default class Engine3D {
     });
   };
 
-  handleCoinCollide = (e, i) => {
-    this.scene.remove(this.boosters[i]);
+  handleCoinCollide = (object) => {
+    this.scene.remove(this.scene.getObjectByName(object.userData.name));
   };
 
   render = () => {

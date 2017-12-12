@@ -5,9 +5,9 @@ import { turnClockwise, TRACK_SEGMENT_STRAIGHT, TRACK_SEGMENT_LEFT, TRACK_SEGMEN
 
 export const objectsData = {
   [TRACK_SEGMENT_STRAIGHT]: [
-    { type: 'coin', position: { x: 1, z: 2, y: 20 }, rotation: 0 },
-    { type: 'coin', position: { x: 4, z: 2, y: 80 }, rotation: 0 },
-    { type: 'snowdrift', position: { x: 10, z: 1, y: 120 }, rotation: 0 },
+    { type: 'coin', position: { x: 1, z: 2, y: 20 }, rotation: 0, name: 'coin_1' },
+    { type: 'coin', position: { x: 4, z: 2, y: 80 }, rotation: 0, name: 'coin_2' },
+    { type: 'snowdrift', position: { x: 10, z: 0, y: 120 }, rotation: 0, name: 'snowdrift_1' },
   ],
   [TRACK_SEGMENT_LEFT]: [],
   [TRACK_SEGMENT_RIGHT]: [],

@@ -5,10 +5,6 @@ import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack, { createTrackBoosters } from './objects/track';
-import { COIN_MATERIAL } from './objects/track/objects/coin/';
-import { SNOWDRIFT_MATERIAL } from './objects/track/objects/snowdrift/';
-
-let timeoutId = null;
 
 export default class Physics {
   constructor(trackData) {
@@ -46,69 +42,30 @@ export default class Physics {
   async loadBoosters() {
     const trackBoosters = await createTrackBoosters(this.trackData);
 
-    trackBoosters.forEach((object, index) => {
+    trackBoosters.forEach((object) => {
       this.world.addBody(object);
       this.objects.push(object);
-
-      switch (object.material.name) {
-        case COIN_MATERIAL:
-          object.addEventListener('collide', (e) => this.handleCoinCollide(e, index));
-          break;
-        case SNOWDRIFT_MATERIAL:
-          object.addEventListener('collide', (e) => this.handleSnowDriftCollide(e, index));
-          break;
-        default:
-          return null;
-      }
+      object.addEventListener('collide', () => this.player.userData.collideHandler(object, this.onCoinCollideHandler));
     });
   }
 
   onCoinCollideHandler = identity;
 
-  onSnowDriftCollide = identity;
+  onSnowdriftCollideHandler = identity;
 
   set onCoinCollide(fn) {
     this.onCoinCollideHandler = fn;
   }
 
-  set onSnowDriftCollide(fn) {
-    this.onSnowDriftHandler = fn;
+  set onSnowdriftCollide(fn) {
+    this.onSnowdriftCollideHandler = fn;
   }
 
   clearWorld = () => {
-    this.objectsToRemove.forEach((objectToRemove) => {
-      this.world.remove(this.objects[objectToRemove]);
+    this.player.userData.objectsToRemove.forEach((objectToRemove) => {
+      this.world.remove(objectToRemove);
     });
-    this.objectsToRemove = [];
-  };
-
-  resetSpeedBooster = () =>
-    setTimeout(() => {
-      this.player.userData.speed = this.player.userData.initialSpeed;
-      timeoutId = null;
-    }, this.player.userData.speedBoosterTime);
-
-  handleCoinCollide = (e, index) => {
-    this.objects[index].removeEventListener('collide', (ev) => this.handleCoinCollide(ev, index));
-    this.objectsToRemove.push(index);
-    this.player.userData.speed = this.player.userData.speedBooster;
-
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = this.resetSpeedBooster();
-    } else {
-      timeoutId = this.resetSpeedBooster();
-    }
-
-    this.onCoinCollideHandler(e, index);
-  };
-
-    handleSnowDriftCollide = (e, index) => {
-    this.objects[index].removeEventListener('collide', (ev) => this.handleSnowDriftCollide(ev, index));
-    this.objectsToRemove.push(index);
-    this.player.applyLocalImpulse(new CANNON.Vec3(0, 0, 150), new CANNON.Vec3(0, 0, 0));
-
-    this.onSnowDriftCollide(e, index);
+    this.player.userData.objectsToRemove = [];
   };
 
   update() {

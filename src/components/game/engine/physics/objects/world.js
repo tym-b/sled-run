@@ -4,6 +4,7 @@ import { material as groundMaterial } from './ground';
 import { material as playerMaterial } from './player';
 import { material as rockMaterial } from './track/objects/rock';
 import { material as treeMaterial } from './track/objects/tree';
+import { material as snowdriftMaterial } from './track/objects/snowdrift';
 
 
 export default function createWorld() {
