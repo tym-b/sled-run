@@ -31,7 +31,7 @@ export default class Engine {
     requestAnimationFrame(this.loop);
     this.physics.update(time);
     this.engine3d.render(time);
-  }
+  };
 
   init = () => {
     requestAnimationFrame(this.loop);

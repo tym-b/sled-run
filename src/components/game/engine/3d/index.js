@@ -24,12 +24,13 @@ export default class Engine3D {
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
+    this.physics.onCoinCollide = this.onObjectDestroy;
     this.trackData = trackData;
 
     this.scene.add(this.light);
     this.scene.add(this.camera);
 
-    // this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
 
     renderTarget.appendChild(this.renderer.domElement);
   }
@@ -62,12 +63,17 @@ export default class Engine3D {
       threeObject.position.copy(cannonObject.position);
       threeObject.quaternion.copy(cannonObject.quaternion);
     });
-  }
+  };
+
+  onObjectDestroy = (object) => {
+    const objectToRemove = this.scene.getObjectByName(object.userData.name, true);
+    objectToRemove.parent.remove(objectToRemove);
+  };
 
   render = () => {
     this.updatePhysics(['player']);
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
-    // this.cannonDebugRenderer.update();
+    this.cannonDebugRenderer.update();
   };
 }

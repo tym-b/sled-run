@@ -1,13 +1,19 @@
 import * as CANNON from 'cannon';
+import { identity } from 'ramda';
 
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
 
+import { COIN_MATERIAL } from './objects/track/objects/coin/';
+import { SNOWDRIFT_MATERIAL } from './objects/track/objects/snowdrift';
+
+const COLLIDATE_MATERIALS = [COIN_MATERIAL, SNOWDRIFT_MATERIAL];
 
 export default class Physics {
   constructor(trackData) {
+    this.trackData = trackData;
     this.world = createWorld();
 
     this.player = createPlayer();
@@ -18,6 +24,11 @@ export default class Physics {
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
+
+      if (COLLIDATE_MATERIALS.indexOf(object.material.name) > -1) {
+        object.addEventListener('collide', () =>
+          this.player.userData.collideHandler(object));
+      }
     });
 
     this.rotation = 0;
@@ -36,10 +47,31 @@ export default class Physics {
     });
   }
 
+  onCoinCollideHandler = identity;
+
+  onSnowdriftCollideHandler = identity;
+
+  set onCoinCollide(fn) {
+    this.onCoinCollideHandler = fn;
+  }
+
+  set onSnowdriftCollide(fn) {
+    this.onSnowdriftCollideHandler = fn;
+  }
+
+  clearWorld = () => {
+    this.player.userData.objectsToRemove.forEach((objectToRemove) => {
+      this.world.remove(objectToRemove);
+      this.onCoinCollideHandler(objectToRemove);
+    });
+    this.player.userData.objectsToRemove = [];
+  };
+
   update() {
     this.realRotation = this.realRotation + this.rotation * 0.015;
     this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
-    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -700), new CANNON.Vec3(0, 0, 0));
+    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
+    this.clearWorld();
   }
 }

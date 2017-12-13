@@ -1,4 +1,5 @@
 export const objectsData = [
+  { type: 'groundRight', position: { x: 0, y: 0 }, rotation: 0 },
   { type: 'rock', position: { x: -42.0559, y: -1.27705 }, rotation: -90 },
   { type: 'rock', position: { x: 112.907, y: 202.843 }, rotation: 6.84001 },
   { type: 'rock', position: { x: 10.9203, y: 158.846 }, rotation: 47.4766 },
