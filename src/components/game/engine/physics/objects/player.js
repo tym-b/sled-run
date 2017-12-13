@@ -36,6 +36,7 @@ export default function createPlayer() {
     player.userData.objectsToRemove.push(object);
     player.userData.speed = player.userData.speedBooster;
 
+    clearTimeout(reducerTimeoutId);
     clearTimeout(boosterTimeoutId);
     boosterTimeoutId = resetSpeedBooster();
   };
