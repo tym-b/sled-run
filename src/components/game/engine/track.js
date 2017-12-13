@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last, uniqueId } from 'lodash';
 
 import segmentsData from './segmentsData';
 
@@ -28,10 +28,14 @@ export function turnClockwise({ x, y }, turns) {
 
 export default function createTrack(trackData) {
   return trackData
-    .map((segmentType) => ({
-      type: segmentType,
-      ...segmentsData[segmentType],
-    }))
+    .map((segmentType) => {
+      const segmentData = segmentsData[segmentType];
+
+      return {
+        ...segmentData,
+        objectsData: segmentData.objectsData.map(object => ({ id: uniqueId(), ...object })),
+      };
+    })
     .reduce((segments, segment) => {
       const prevSegment = last(segments);
 
