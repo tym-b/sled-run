@@ -67,8 +67,8 @@ export default class Engine3D {
   };
 
   onObjectDestroy = (object) => {
-    console.log(this.scene.getObjectByName(object.userData.name, true));
-    this.scene.remove(this.scene.getObjectByName(object.userData.name, true));
+    const objectToRemove = this.scene.getObjectByName(object.userData.name, true);
+    objectToRemove.parent.remove(objectToRemove);
   };
 
   render = () => {

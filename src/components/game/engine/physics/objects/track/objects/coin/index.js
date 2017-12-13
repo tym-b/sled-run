@@ -3,7 +3,7 @@ import * as CANNON from 'cannon';
 export const COIN_MATERIAL = 'coinMaterial';
 export const material = new CANNON.Material(COIN_MATERIAL);
 
-export default function createCoin({ position, name }) {
+export default function createCoin({ position, id }) {
   const coin = new CANNON.Body({
     mass: 0,
     position: new CANNON.Vec3(position.x, 2, -position.y),
@@ -15,7 +15,7 @@ export default function createCoin({ position, name }) {
   coin.collisionResponse = false;
 
   coin.userData = {
-    name
+    name: id,
   };
 
   return coin;
