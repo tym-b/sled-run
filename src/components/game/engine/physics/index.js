@@ -4,7 +4,12 @@ import { identity } from 'ramda';
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
-import createTrack, { createTrackBoosters } from './objects/track';
+import createTrack from './objects/track';
+
+import { COIN_MATERIAL } from './objects/track/objects/coin/';
+import { SNOWDRIFT_MATERIAL } from './objects/track/objects/snowdrift';
+
+const COLLIDATE_MATERIALS = [COIN_MATERIAL, SNOWDRIFT_MATERIAL];
 
 export default class Physics {
   constructor(trackData) {
@@ -21,6 +26,11 @@ export default class Physics {
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
+
+      if (COLLIDATE_MATERIALS.indexOf(object.material.name) > -1) {
+        object.addEventListener('collide', () =>
+          this.player.userData.collideHandler(object, this.onCoinCollideHandler));
+      }
     });
 
     this.rotation = 0;
@@ -36,16 +46,6 @@ export default class Physics {
 
     window.addEventListener('keyup', () => {
       this.rotation = 0;
-    });
-  }
-
-  async loadBoosters() {
-    const trackBoosters = await createTrackBoosters(this.trackData);
-
-    trackBoosters.forEach((object) => {
-      this.world.addBody(object);
-      this.objects.push(object);
-      object.addEventListener('collide', () => this.player.userData.collideHandler(object, this.onCoinCollideHandler));
     });
   }
 

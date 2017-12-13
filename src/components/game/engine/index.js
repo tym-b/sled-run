@@ -19,7 +19,6 @@ export default class Engine {
     const track = createTrack(TRACK);
 
     this.physics = new Physics(track);
-    this.physics.loadBoosters();
     this.engine3d = new Engine3D(renderTarget, this.physics, track);
     this.engine3d.load().then(this.init);
   }

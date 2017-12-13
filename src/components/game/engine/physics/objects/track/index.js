@@ -2,7 +2,6 @@ import { flatten } from 'lodash';
 
 import objectCreators from './objects';
 import { turnClockwise } from '../../../track';
-import createBoostersForSegment from './straightBoosters';
 
 
 export default function createTrack(trackData) {
@@ -21,10 +20,4 @@ export default function createTrack(trackData) {
         };
       })))
     .map(data => objectCreators[data.type](data));
-}
-
-export async function createTrackBoosters(trackData) {
-  return flatten(trackData.map(({ type, offset, clockwiseTurns }) =>
-    createBoostersForSegment(offset, clockwiseTurns, type)
-  ));
 }
