@@ -41,15 +41,8 @@ export default function createPlayer() {
   };
 
   const handleSnowdriftCollide = (object, fn) => {
-    if (player.userData.lastCollidateSnowdrift !== object.userData.name) {
-      player.userData.speed = player.userData.initialSpeed;
-      player.applyLocalImpulse(new CANNON.Vec3(0, 0, 100), new CANNON.Vec3(0, 0, 0));
-
-      player.userData.lastCollidateSnowdrift = object.userData.name;
-      if (fn) {
-        fn(object);
-      }
-    }
+    player.userData.speed = player.userData.initialSpeed;
+    player.applyLocalImpulse(new CANNON.Vec3(0, 0, 100), new CANNON.Vec3(0, 0, 0));
   };
 
   player.userData = {
