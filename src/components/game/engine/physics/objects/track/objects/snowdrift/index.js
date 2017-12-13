@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 
-export const SNOWDRIFT_MATERIAL = 'snowdriftMaterial';
-export const material = new CANNON.Material(SNOWDRIFT_MATERIAL);
+export const SNOWDRIFT_MATERIAL_NAME = 'snowdriftMaterial';
+export const material = new CANNON.Material(SNOWDRIFT_MATERIAL_NAME);
 
 export default function createSnowdrift({ position, id }) {
   const snowdrift = new CANNON.Body({

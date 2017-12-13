@@ -24,7 +24,9 @@ export default class Engine3D {
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
-    this.physics.onCoinCollide = this.onObjectDestroy;
+    this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
+    this.physics.onSnowdriftCollide = this.handleSnowdriftCollide;
+
     this.trackData = trackData;
 
     this.scene.add(this.light);
@@ -48,6 +50,15 @@ export default class Engine3D {
     this.scene.add(this.player, this.sky, this.track);
   }
 
+  handleRemoveObject = ({ body }) => {
+    const objectToRemove = this.scene.getObjectByName(body.userData.name);
+    objectToRemove.parent.remove(objectToRemove);
+  };
+
+  handleSnowdriftCollide = (body) => {
+    debugger;
+  };
+
   updateViewport = () => {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio || 1);
@@ -55,8 +66,8 @@ export default class Engine3D {
     this.camera.updateProjectionMatrix();
   };
 
-  updatePhysics = (keys) => {
-    keys.forEach((key) => {
+  syncWorld = () => {
+    ['player'].forEach((key) => {
       const cannonObject = this.physics[key];
       const threeObject = this[key];
 
@@ -65,13 +76,8 @@ export default class Engine3D {
     });
   };
 
-  onObjectDestroy = (object) => {
-    const objectToRemove = this.scene.getObjectByName(object.userData.name, true);
-    objectToRemove.parent.remove(objectToRemove);
-  };
-
   render = () => {
-    this.updatePhysics(['player']);
+    this.syncWorld();
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();
