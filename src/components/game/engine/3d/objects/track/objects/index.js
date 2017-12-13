@@ -7,6 +7,7 @@ import snowdrift from './snowdrift';
 import groundStraight from './groundStraight';
 import groundLeft from './groundLeft';
 import groundRight from './groundRight';
+import ramp from './ramp';
 
 export default {
   groundStraight,
@@ -18,4 +19,5 @@ export default {
   tree,
   coin,
   snowdrift,
+  ramp,
 };

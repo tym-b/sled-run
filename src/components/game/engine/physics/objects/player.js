@@ -20,11 +20,11 @@ export default function createPlayer() {
   let snowdriftCollisionFilterTimeout = null;
 
   const player = new CANNON.Body({
-    mass: 1,
+    mass: 2,
     position: new CANNON.Vec3(0, 5, 0),
     shape: new CANNON.Sphere(1.5),
     fixedRotation: true,
-    linearDamping: 0.999,
+    linearDamping: 0.99,
     material,
   });
 
