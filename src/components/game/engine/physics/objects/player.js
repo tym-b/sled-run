@@ -3,12 +3,12 @@ import * as CANNON from 'cannon';
 import { COIN_MATERIAL } from './track/objects/coin/';
 import { SNOWDRIFT_MATERIAL } from './track/objects/snowdrift/';
 
-let boosterTimeoutId = null;
-let reducerTimeoutId = null;
-
 export const material = new CANNON.Material();
 
 export default function createPlayer() {
+  let boosterTimeoutId = null;
+  let reducerTimeoutId = null;
+
   const player = new CANNON.Body({
     mass: 1,
     position: new CANNON.Vec3(0, 5, 0),
@@ -31,36 +31,22 @@ export default function createPlayer() {
     }, player.userData.speedReducerTime);
 
 
-  const handleCoinCollide = (object, fn) => {
+  const handleCoinCollide = (object) => {
     object.removeEventListener('collide', () => player.userData.collideHandler(object));
     player.userData.objectsToRemove.push(object);
     player.userData.speed = player.userData.speedBooster;
 
-    if (boosterTimeoutId) {
-      clearTimeout(boosterTimeoutId);
-      boosterTimeoutId = resetSpeedBooster();
-    } else {
-      boosterTimeoutId = resetSpeedBooster();
-    }
-    if (fn) {
-      fn(object);
-    }
+    clearTimeout(boosterTimeoutId);
+    boosterTimeoutId = resetSpeedBooster();
   };
 
-  const handleSnowdriftCollide = (object, fn) => {
+  const handleSnowdriftCollide = (object) => {
     if (player.userData.lastCollidateSnowdrift !== object.userData.name) {
       player.userData.speed = player.userData.speedReducer;
 
-      if (reducerTimeoutId) {
-        clearTimeout(reducerTimeoutId);
-        reducerTimeoutId = resetSpeedReducer();
-      } else {
-        clearTimeout(boosterTimeoutId);
-        reducerTimeoutId = resetSpeedReducer();
-      }
-      if (fn) {
-        fn(object);
-      }
+      clearTimeout(reducerTimeoutId);
+      clearTimeout(boosterTimeoutId);
+      reducerTimeoutId = resetSpeedReducer();
     }
   };
 

@@ -21,7 +21,6 @@ export default class Engine3D {
   camera = createCamera();
   renderer = createRenderer();
   light = createLight();
-  objects = [];
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;

@@ -27,7 +27,7 @@ export default class Physics {
 
       if (COLLIDATE_MATERIALS.indexOf(object.material.name) > -1) {
         object.addEventListener('collide', () =>
-          this.player.userData.collideHandler(object, this.onCoinCollideHandler));
+          this.player.userData.collideHandler(object));
       }
     });
 
@@ -62,6 +62,7 @@ export default class Physics {
   clearWorld = () => {
     this.player.userData.objectsToRemove.forEach((objectToRemove) => {
       this.world.remove(objectToRemove);
+      this.onCoinCollideHandler(objectToRemove);
     });
     this.player.userData.objectsToRemove = [];
   };
