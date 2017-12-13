@@ -21,8 +21,6 @@ export default class Physics {
 
     this.ground = createGround();
     this.world.addBody(this.ground);
-    this.objects = [];
-    this.objectsToRemove = [];
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
