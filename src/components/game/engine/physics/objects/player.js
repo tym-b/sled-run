@@ -3,7 +3,8 @@ import * as CANNON from 'cannon';
 import { COIN_MATERIAL } from './track/objects/coin/';
 import { SNOWDRIFT_MATERIAL } from './track/objects/snowdrift/';
 
-let timeoutId = null;
+let boosterTimeoutId = null;
+let reducerTimeoutId = null;
 
 export const material = new CANNON.Material();
 
@@ -20,8 +21,14 @@ export default function createPlayer() {
   const resetSpeedBooster = () =>
     setTimeout(() => {
       player.userData.speed = player.userData.initialSpeed;
-      timeoutId = null;
+      boosterTimeoutId = null;
     }, player.userData.speedBoosterTime);
+
+  const resetSpeedReducer = () =>
+    setTimeout(() => {
+      player.userData.speed = player.userData.initialSpeed;
+      boosterTimeoutId = null;
+    }, player.userData.speedReducerTime);
 
 
   const handleCoinCollide = (object, fn) => {
@@ -29,11 +36,11 @@ export default function createPlayer() {
     player.userData.objectsToRemove.push(object);
     player.userData.speed = player.userData.speedBooster;
 
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = resetSpeedBooster();
+    if (boosterTimeoutId) {
+      clearTimeout(boosterTimeoutId);
+      boosterTimeoutId = resetSpeedBooster();
     } else {
-      timeoutId = resetSpeedBooster();
+      boosterTimeoutId = resetSpeedBooster();
     }
     if (fn) {
       fn(object);
@@ -42,10 +49,15 @@ export default function createPlayer() {
 
   const handleSnowdriftCollide = (object, fn) => {
     if (player.userData.lastCollidateSnowdrift !== object.userData.name) {
-      player.userData.speed = player.userData.initialSpeed;
-      player.applyLocalImpulse(new CANNON.Vec3(0, 0, 100), new CANNON.Vec3(0, 0, 0));
+      player.userData.speed = player.userData.speedReducer;
 
-      player.userData.lastCollidateSnowdrift = object.userData.name;
+      if (reducerTimeoutId) {
+        clearTimeout(reducerTimeoutId);
+        reducerTimeoutId = resetSpeedReducer();
+      } else {
+        clearTimeout(boosterTimeoutId);
+        reducerTimeoutId = resetSpeedReducer();
+      }
       if (fn) {
         fn(object);
       }
@@ -57,6 +69,8 @@ export default function createPlayer() {
     speed: 500,
     speedBooster: 900,
     speedBoosterTime: 1500,
+    speedReducer: 200,
+    speedReducerTime: 500,
     objectsToRemove: [],
     lastCollidateSnowdrift: '',
     collideHandler: (object, fn) => {
