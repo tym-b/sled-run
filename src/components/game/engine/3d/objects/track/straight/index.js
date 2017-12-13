@@ -11,9 +11,10 @@ export default async function createStraightSegment(objects, materials) {
 
   segment.add(ground);
 
-  objectsData.forEach(({ type, position, rotation }) => {
+  objectsData.forEach(({ name, type, position, rotation }) => {
     const object = objects[type].clone();
 
+    object.name = name;
     object.rotation.y = rotation / 180 * Math.PI;
     object.position.set(position.x, position.z || 0, -position.y);
 
