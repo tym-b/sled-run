@@ -15,11 +15,5 @@ export default class Game extends PureComponent {
 
   handleContainerRef = (ref) => (this.renderTarget = ref);
 
-  render() {
-    return (
-      <div>
-        <div ref={this.handleContainerRef} />
-      </div>
-    );
-  }
+  render = () => <div ref={this.handleContainerRef} />;
 }
