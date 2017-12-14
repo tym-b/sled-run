@@ -7,6 +7,7 @@ import snowdrift from './snowdrift';
 import ramp from './ramp';
 import stone from './stone';
 import stones from './stones';
+import meta from './meta';
 
 export default {
   rock,
@@ -18,4 +19,5 @@ export default {
   ramp,
   stone,
   stones,
+  meta,
 };
