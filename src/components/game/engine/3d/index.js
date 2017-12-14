@@ -56,7 +56,7 @@ export default class Engine3D {
   };
 
   handleSnowdriftCollide = (body) => {
-    debugger;
+    // TODO
   };
 
   updateViewport = () => {
