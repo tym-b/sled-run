@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 
 import Engine from './engine';
 
-
 export default class Game extends PureComponent {
   componentDidMount() {
     this.engine = new Engine(this.renderTarget);
