@@ -52,7 +52,7 @@ export default class Sensor extends PureComponent {
 
   emitPosition = throttle((position) => {
     this.setState({ position });
-    this.socket.emit('devicemove', { position });
+    this.socket.emit('deviceMove', { position });
   }, 30);
 
   handleOrientation = pipe(prop('beta'), Math.round, this.handlePositionChange);

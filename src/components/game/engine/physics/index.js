@@ -5,6 +5,7 @@ import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
+import SensorData from '../../sensorData';
 
 
 export default class Physics {
@@ -53,7 +54,8 @@ export default class Physics {
   };
 
   update() {
-    this.realRotation = this.realRotation + this.rotation * 0.015;
+    const rotation = SensorData.getValue() ? (SensorData.getValue() + 2) : this.rotation * 8;
+    this.realRotation = this.realRotation + (rotation || 0) * 0.003;
     this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
     this.player.applyLocalForce(new CANNON.Vec3(0, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
