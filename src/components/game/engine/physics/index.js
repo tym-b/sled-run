@@ -6,10 +6,6 @@ import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
 
-import { COIN_MATERIAL } from './objects/track/objects/coin/';
-import { SNOWDRIFT_MATERIAL } from './objects/track/objects/snowdrift';
-
-const COLLIDATE_MATERIALS = [COIN_MATERIAL, SNOWDRIFT_MATERIAL];
 
 export default class Physics {
   constructor(trackData) {
@@ -24,11 +20,6 @@ export default class Physics {
 
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
-
-      if (COLLIDATE_MATERIALS.indexOf(object.material.name) > -1) {
-        object.addEventListener('collide', () =>
-          this.player.userData.collideHandler(object));
-      }
     });
 
     this.rotation = 0;
@@ -47,24 +38,18 @@ export default class Physics {
     });
   }
 
-  onCoinCollideHandler = identity;
-
   onSnowdriftCollideHandler = identity;
-
-  set onCoinCollide(fn) {
-    this.onCoinCollideHandler = fn;
-  }
 
   set onSnowdriftCollide(fn) {
     this.onSnowdriftCollideHandler = fn;
   }
 
   clearWorld = () => {
-    this.player.userData.objectsToRemove.forEach((objectToRemove) => {
-      this.world.remove(objectToRemove);
-      this.onCoinCollideHandler(objectToRemove);
-    });
-    this.player.userData.objectsToRemove = [];
+    this.player.userData.coinsToRemove.forEach(body => this.world.remove(body));
+    this.player.userData.coinsToRemove = [];
+
+    this.player.userData.snowdriftsToExplode.forEach(body => this.onSnowdriftCollideHandler(body));
+    this.player.userData.snowdriftsToExplode = [];
   };
 
   update() {

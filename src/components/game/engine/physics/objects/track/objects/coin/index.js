@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon';
 
-export const COIN_MATERIAL = 'coinMaterial';
-export const material = new CANNON.Material(COIN_MATERIAL);
+export const COIN_MATERIAL_NAME = 'coinMaterial';
+export const material = new CANNON.Material(COIN_MATERIAL_NAME);
 
 export default function createCoin({ position, id }) {
   const coin = new CANNON.Body({

@@ -1,8 +1,9 @@
 import * as CANNON from 'cannon';
 import { times } from 'lodash';
 
-export const material = new CANNON.Material();
 
+export const TREE_MATERIAL_NAME = 'treeMaterial';
+export const material = new CANNON.Material(TREE_MATERIAL_NAME);
 
 export default function createTree({ position }) {
   const tree = new CANNON.Body({

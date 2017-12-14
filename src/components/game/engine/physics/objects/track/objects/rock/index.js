@@ -1,7 +1,8 @@
 import * as CANNON from 'cannon';
 
+export const ROCK_MATERIAL_NAME = 'rockMaterial';
+export const material = new CANNON.Material(ROCK_MATERIAL_NAME);
 
-export const material = new CANNON.Material();
 
 const boxes = [
   { size: [14, 6, 2], offset: [9, 3, -12.5], rotation: -0.43 },
@@ -11,7 +12,6 @@ const boxes = [
   { size: [2, 6, 9], offset: [20.5, 3, 0], rotation: 0 },
   { size: [2, 6, 9], offset: [-20.5, 3, 0], rotation: 0 },
 ];
-
 
 export default function createRock({ position, rotation, clockwiseTurns }) {
   const rock = new CANNON.Body({
