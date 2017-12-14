@@ -1,5 +1,5 @@
-import * as CANNON from 'cannon';
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 import TWEEN from 'tween.js';
 
 import createScene from './scene';
@@ -17,14 +17,19 @@ window.CANNON = CANNON;
 
 require('cannon/tools/threejs/CannonDebugRenderer');
 
+
 export default class Engine3D {
   scene = createScene();
   camera = createCamera();
   renderer = createRenderer();
   light = createLight();
 
-  constructor(renderTarget, physics) {
+  constructor(renderTarget, physics, trackData) {
     this.physics = physics;
+    this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
+    this.physics.onSnowdriftCollide = this.handleSnowdriftCollide;
+
+    this.trackData = trackData;
 
     this.scene.add(this.light);
     this.scene.add(this.camera);
@@ -74,14 +79,20 @@ export default class Engine3D {
     this.camera.updateProjectionMatrix();
   };
 
-  updatePlayer = () => {
-    this.player.position.copy(this.physics.player.position);
-    this.player.quaternion.copy(this.physics.player.quaternion);
-  }
+  syncWorld = () => {
+    ['player'].forEach((key) => {
+      const cannonObject = this.physics[key];
+      const threeObject = this[key];
+
+      threeObject.position.copy(cannonObject.position);
+      threeObject.quaternion.copy(cannonObject.quaternion);
+    });
+  };
 
   render = (time) => {
     TWEEN.update(time);
-    this.updatePlayer();
+    this.syncWorld();
+    this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);
     this.cannonDebugRenderer.update();
   };

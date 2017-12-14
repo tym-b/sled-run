@@ -1,16 +1,8 @@
-const { always, propEq, ifElse } = require('ramda');
-const constants = require('../constants');
+const constants = require('../helpers');
 
-const handleDisconnect = (clients, players, id) => () => {
-  const index = clients.indexOf(id);
-  const type = ifElse(
-    propEq(constants.GREEN_PLAYER, id),
-    always(constants.GREEN_PLAYER),
-    always(constants.RED_PLAYER)
-  )(players);
-
+const handleDisconnect = (players, id) => () => {
+  const type = constants.getPlayerTypeById(players, id);
   players[type] = null;
-  clients.splice(index, 1);
 
   console.log(`Player ${type} disconnected, id: ${id}`);
 };
