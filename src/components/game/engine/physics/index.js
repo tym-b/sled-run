@@ -18,8 +18,14 @@ export default class Physics {
     this.ground = createGround();
     this.world.addBody(this.ground);
 
+    this.dynamicObjects = [];
+
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
+
+      if (object.type === CANNON.Body.DYNAMIC) {
+        this.dynamicObjects.push(object);
+      }
     });
 
     this.rotation = 0;

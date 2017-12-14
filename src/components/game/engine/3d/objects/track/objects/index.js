@@ -8,6 +8,8 @@ import groundStraight from './groundStraight';
 import groundLeft from './groundLeft';
 import groundRight from './groundRight';
 import ramp from './ramp';
+import stone from './stone';
+import stones from './stones';
 
 export default {
   groundStraight,
@@ -20,4 +22,6 @@ export default {
   coin,
   snowdrift,
   ramp,
+  stone,
+  stones,
 };

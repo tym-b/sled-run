@@ -1,13 +1,8 @@
-import * as THREE from 'three';
-
-import { parseObject, loadTexture } from '../../../../utils';
-import coinTexture from './coin.jpg';
-import coinGeometry from './coin.json';
+import { createTexturizedObject } from '../../../../utils';
+import geometry from './coin.json';
+import texture from './coin.jpg';
 
 
-export default async function createCoin() {
-  const [geometry, texture] = await Promise.all([parseObject(coinGeometry), loadTexture(coinTexture)]);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
-
-  return new THREE.Mesh(geometry, material);
+export default function createGroundStraight() {
+  return createTexturizedObject(geometry, texture);
 }

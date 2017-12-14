@@ -1,14 +1,8 @@
-import * as THREE from 'three';
-
-import { loadObject, loadTexture } from '../../../../utils';
-import santaTexture from './santa.jpg';
-
-const santaGeometry = require('file-loader!./santa.json');
+import { createTexturizedObject } from '../../../../utils';
+import geometry from './santa.json';
+import texture from './santa.jpg';
 
 
-export default async function createSanta() {
-  const [geometry, texture] = await Promise.all([loadObject(santaGeometry), loadTexture(santaTexture)]);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
-
-  return new THREE.Mesh(geometry, material);
+export default function createSanta() {
+  return createTexturizedObject(geometry, texture);
 }
