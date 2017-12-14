@@ -4,6 +4,7 @@ import { material as groundMaterial } from './ground';
 import { material as playerMaterial } from './player';
 import { material as rockMaterial } from './track/objects/rock';
 import { material as treeMaterial } from './track/objects/tree';
+import { material as rampMaterial } from './track/objects/ramp';
 
 
 export default function createWorld() {
@@ -27,6 +28,11 @@ export default function createWorld() {
   world.addContactMaterial(new CANNON.ContactMaterial(treeMaterial, playerMaterial, {
     friction: 0.002,
     restitution: 0.1,
+  }));
+
+  world.addContactMaterial(new CANNON.ContactMaterial(rampMaterial, playerMaterial, {
+    friction: 0,
+    restitution: 0,
   }));
 
   return world;
