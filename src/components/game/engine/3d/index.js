@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
+import TWEEN from 'tween.js';
 
 import createScene from './scene';
 import createCamera from './camera';
@@ -9,6 +10,7 @@ import createLight from './light';
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
+import createSnowdriftExplosion, { explode } from './objects/track/objects/snowdriftExplosion';
 
 window.THREE = THREE;
 window.CANNON = CANNON;
@@ -41,10 +43,11 @@ export default class Engine3D {
     this.player = await createPlayer();
     this.sky = await createSky();
     this.track = await createTrack(this.trackData);
+    this.snowdriftExplosion = await createSnowdriftExplosion();
 
     // this.camera.position.set(0, 500, -100);
     // this.camera.lookAt(new THREE.Vector3(0, 0, -100));
-    this.camera.position.set(0, 5, 15);
+    this.camera.position.set(0, 4, 20);
     this.player.add(this.camera);
 
     this.scene.add(this.player, this.sky, this.track);
@@ -55,8 +58,18 @@ export default class Engine3D {
     objectToRemove.parent.remove(objectToRemove);
   };
 
-  handleSnowdriftCollide = (body) => {
-    // TODO
+  handleSnowdriftCollide = async (body) => {
+    const snowdrift = this.scene.getObjectByName(body.userData.name);
+    const snowdriftWorldPosition = snowdrift.parent.localToWorld(snowdrift.position.clone());
+    const snowdriftExplosion = this.snowdriftExplosion.clone();
+
+    snowdriftExplosion.position.copy(snowdriftWorldPosition);
+
+    this.scene.add(snowdriftExplosion);
+
+    await explode(snowdriftExplosion);
+
+    this.scene.remove(snowdriftExplosion);
   };
 
   updateViewport = () => {
@@ -76,7 +89,8 @@ export default class Engine3D {
     });
   };
 
-  render = () => {
+  render = (time) => {
+    TWEEN.update(time);
     this.syncWorld();
     this.sky.position.copy(this.player.position);
     this.renderer.render(this.scene, this.camera);

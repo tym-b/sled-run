@@ -15,6 +15,7 @@ export default function createTrack(trackData) {
           position: {
             x: realPositon.x + offset.x,
             y: realPositon.y + offset.y,
+            z: data.position.z,
           },
           clockwiseTurns,
         };
