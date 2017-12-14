@@ -2,7 +2,7 @@ import * as CANNON from 'cannon';
 
 import { COIN_MATERIAL_NAME } from './track/objects/coin';
 import { SNOWDRIFT_MATERIAL_NAME } from './track/objects/snowdrift';
-
+import { META_MATERIAL_NAME } from './track/objects/meta';
 
 export const INITIAL_SPEED = 500;
 export const BOOSTED_SPEED = 900;
@@ -44,6 +44,12 @@ export default function createPlayer() {
     modifySpeed(BOOSTED_SPEED, BOOSTED_SPEED_INTERVAL);
   };
 
+  const handleMetaCollide = () => {
+    setInterval(() => {
+      player.userData.speed = player.userData.speed && player.userData.speed - 50;
+    }, 100);
+  };
+
   const handleSnowdriftCollide = (body) => {
     if (!snowdriftCollisionFilter) {
       clearTimeout(snowdriftCollisionFilterTimeout);
@@ -62,6 +68,9 @@ export default function createPlayer() {
         break;
       case SNOWDRIFT_MATERIAL_NAME:
         handleSnowdriftCollide(body);
+        break;
+      case META_MATERIAL_NAME:
+        handleMetaCollide(body);
         break;
       default:
     }
