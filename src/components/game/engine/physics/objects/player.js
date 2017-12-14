@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon';
+import TWEEN from 'tween.js';
 
 import { COIN_MATERIAL_NAME } from './track/objects/coin';
 import { SNOWDRIFT_MATERIAL_NAME } from './track/objects/snowdrift';
@@ -29,7 +30,12 @@ export default function createPlayer() {
   });
 
   const modifySpeed = (speed, time) => {
-    player.userData.speed = speed;
+    const easing = player.userData.speed > speed ? 'Out' : 'In';
+
+    new TWEEN.Tween(player.userData)
+      .to({ speed }, time - 100)
+      .easing(TWEEN.Easing.Cubic[easing])
+      .start();
 
     clearTimeout(speedModifierTimeoutId);
 
@@ -44,12 +50,6 @@ export default function createPlayer() {
     modifySpeed(BOOSTED_SPEED, BOOSTED_SPEED_INTERVAL);
   };
 
-  const handleMetaCollide = () => {
-    setInterval(() => {
-      player.userData.speed = player.userData.speed && player.userData.speed - 50;
-    }, 100);
-  };
-
   const handleSnowdriftCollide = (body) => {
     if (!snowdriftCollisionFilter) {
       clearTimeout(snowdriftCollisionFilterTimeout);
@@ -59,6 +59,13 @@ export default function createPlayer() {
       player.userData.snowdriftsToExplode.push(body);
       modifySpeed(REDUCED_SPEED, REDUCED_SPEED_INTERVAL);
     }
+  };
+
+  const handleMetaCollide = () => {
+    new TWEEN.Tween(player.userData)
+      .to({ speed: 0 }, 2000)
+      .easing(TWEEN.Easing.Cubic.Out)
+      .start();
   };
 
   player.addEventListener('collide', ({ body }) => {
