@@ -13,6 +13,7 @@ export const objectsData = [
   { type: 'smallRock', position: { x: 55.2016, y: 1.16933 }, rotation: 91.8 },
   { type: 'smallRock', position: { x: -116.102, y: 192.541 }, rotation: 174.4 },
   { type: 'smallRock', position: { x: -84.9812, y: 195.114 }, rotation: -10.5 },
+  { type: 'stone', position: { x: -20, y: 40 }, rotation: 0 },
 ];
 
 export const nextSegment = {

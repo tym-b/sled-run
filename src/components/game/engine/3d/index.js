@@ -87,6 +87,16 @@ export default class Engine3D {
       threeObject.position.copy(cannonObject.position);
       threeObject.quaternion.copy(cannonObject.quaternion);
     });
+
+    this.physics.dynamicObjects.forEach(object => {
+      const sceneObject = this.scene.getObjectByName(object.userData.name);
+
+      sceneObject.position.copy(object.position);
+      sceneObject.quaternion.copy(object.quaternion);
+
+      sceneObject.parent.updateMatrixWorld();
+      sceneObject.applyMatrix(new THREE.Matrix4().getInverse(sceneObject.parent.matrixWorld));
+    });
   };
 
   render = (time) => {

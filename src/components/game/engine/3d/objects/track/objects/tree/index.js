@@ -1,13 +1,8 @@
-import * as THREE from 'three';
-
-import { parseObject, loadTexture } from '../../../../utils';
-import treeGeometry from './tree.json';
-import treeTexture from './tree.jpg';
+import { createTexturizedObject } from '../../../../utils';
+import geometry from './tree.json';
+import texture from './tree.jpg';
 
 
-export default async function createTree() {
-  const [geometry, texture] = await Promise.all([parseObject(treeGeometry), loadTexture(treeTexture)]);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
-
-  return new THREE.Mesh(geometry, material);
+export default function createTree() {
+  return createTexturizedObject(geometry, texture);
 }

@@ -5,6 +5,8 @@ import tree from './tree';
 import coin from './coin';
 import snowdrift from './snowdrift';
 import ramp from './ramp';
+import stone from './stone';
+import stones from './stones';
 
 export default {
   rock,
@@ -14,4 +16,6 @@ export default {
   coin,
   snowdrift,
   ramp,
+  stone,
+  stones,
 };

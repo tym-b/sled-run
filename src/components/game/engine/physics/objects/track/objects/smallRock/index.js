@@ -19,7 +19,7 @@ export default function createSmallRock({ position, rotation, clockwiseTurns }) 
     type: CANNON.Body.STATIC,
   });
 
-  rock.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotation / 180 * Math.PI + clockwiseTurns / 2 * Math.PI);
+  rock.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotation / 180 * Math.PI - clockwiseTurns / 2 * Math.PI);
 
   boxes.forEach((box) => {
     const quaternion = new CANNON.Quaternion();

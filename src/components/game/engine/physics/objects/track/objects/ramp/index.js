@@ -10,7 +10,7 @@ const boxes = [
 ];
 
 
-export default function createTree({ position }) {
+export default function createTree({ position, rotation, clockwiseTurns }) {
   const ramp = new CANNON.Body({
     position: new CANNON.Vec3(position.x, 0, -position.y),
     material,
@@ -28,6 +28,8 @@ export default function createTree({ position }) {
       quaternion
     );
   });
+
+  ramp.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotation / 180 * Math.PI - clockwiseTurns / 2 * Math.PI);
 
   return ramp;
 }
