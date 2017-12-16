@@ -25,17 +25,12 @@ export default function createPlayer() {
     position: new CANNON.Vec3(0, 5, 0),
     shape: new CANNON.Sphere(1.5),
     fixedRotation: true,
-    linearDamping: 0.99,
+    linearDamping: 0.95,
     material,
   });
 
   const modifySpeed = (speed, time) => {
-    const easing = player.userData.speed > speed ? 'Out' : 'In';
-
-    new TWEEN.Tween(player.userData)
-      .to({ speed }, time - 100)
-      .easing(TWEEN.Easing.Cubic[easing])
-      .start();
+    player.userData.speed = speed;
 
     clearTimeout(speedModifierTimeoutId);
 
