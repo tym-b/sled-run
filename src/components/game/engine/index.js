@@ -15,10 +15,10 @@ const TRACK = [
 ];
 
 export default class Engine {
-  constructor(renderTarget) {
+  constructor(renderTarget, sensorData) {
     const track = createTrack(TRACK);
 
-    this.physics = new Physics(track);
+    this.physics = new Physics(track, sensorData);
     this.engine3d = new Engine3D(renderTarget, this.physics, track);
     this.engine3d.load().then(this.init);
   }

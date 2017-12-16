@@ -3,9 +3,8 @@ import { throttle } from 'lodash';
 import { pipe, prop, contains, ifElse, equals } from 'ramda';
 import socketio from 'socket.io-client';
 import qs from 'query-string';
+import { PLAYER_GREEN, PLAYER_RED } from '../../../server/helpers';
 
-const PLAYER_GREEN = 'green';
-const PLAYER_RED = 'red';
 const playersTypes = [PLAYER_GREEN, PLAYER_RED];
 const CONNECTING = 'connecting';
 const CONNECTED = 'connected';

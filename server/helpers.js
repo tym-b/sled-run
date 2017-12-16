@@ -1,4 +1,5 @@
 const { propEq, always, ifElse } = require('ramda');
+
 const RED_PLAYER = 'red';
 const GREEN_PLAYER = 'green';
 const getPlayerTypeById = (players, id) => ifElse(

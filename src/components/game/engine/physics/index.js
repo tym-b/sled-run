@@ -5,11 +5,11 @@ import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
-import SensorData from '../../sensorData';
 
 
 export default class Physics {
-  constructor(trackData) {
+  constructor(trackData, sensorData) {
+    this.sensorData = sensorData;
     this.trackData = trackData;
     this.world = createWorld();
 
@@ -24,19 +24,6 @@ export default class Physics {
     });
 
     this.rotation = 0;
-    this.realRotation = 0;
-
-    window.addEventListener('keydown', ({ key }) => {
-      if (key === 'ArrowLeft') {
-        this.rotation = 1;
-      } else if (key === 'ArrowRight') {
-        this.rotation = -1;
-      }
-    });
-
-    window.addEventListener('keyup', () => {
-      this.rotation = 0;
-    });
   }
 
   onSnowdriftCollideHandler = identity;
@@ -54,9 +41,8 @@ export default class Physics {
   };
 
   update() {
-    const rotation = SensorData.getValue() ? (SensorData.getValue() + 2) : this.rotation * 8;
-    this.realRotation = this.realRotation + (rotation || 0) * 0.003;
-    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.realRotation);
+    this.rotation = this.rotation + this.sensorData.getValue() * 0.003;
+    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.rotation);
     this.player.applyLocalForce(new CANNON.Vec3(0, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
     this.world.step(1 / 60);
     this.clearWorld();
