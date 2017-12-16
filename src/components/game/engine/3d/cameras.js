@@ -9,7 +9,7 @@ export default function createCameras() {
   const { innerWidth, innerHeight } = window;
 
   return CAMERAS.map(({ x, width }) => {
-    const camera = new THREE.PerspectiveCamera(60, width * innerWidth / innerHeight, 1, 900);
+    const camera = new THREE.PerspectiveCamera(60, width * innerWidth / innerHeight, 1, 500);
 
     camera.position.set(0, 4, 20);
     camera.userData.width = width * innerWidth;
