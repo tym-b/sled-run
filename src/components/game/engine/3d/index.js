@@ -1,16 +1,17 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
-import TWEEN from 'tween.js';
 
 import createScene from './scene';
-import createCamera from './camera';
-import createRenderer from './renderer';
+import createCameras, { updateCameras } from './cameras';
+import createRenderer, { updateRenderer } from './renderer';
 import createLight from './light';
 
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
 import createSnowdriftExplosion, { explode } from './objects/track/objects/snowdriftExplosion';
+import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
+
 
 window.THREE = THREE;
 window.CANNON = CANNON;
@@ -20,7 +21,7 @@ require('cannon/tools/threejs/CannonDebugRenderer');
 
 export default class Engine3D {
   scene = createScene();
-  camera = createCamera();
+  cameras = createCameras();
   renderer = createRenderer();
   light = createLight();
 
@@ -32,7 +33,6 @@ export default class Engine3D {
     this.trackData = trackData;
 
     this.scene.add(this.light);
-    this.scene.add(this.camera);
 
     this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
 
@@ -40,17 +40,14 @@ export default class Engine3D {
   }
 
   async load() {
-    this.player = await createPlayer();
-    this.sky = await createSky();
+    this.players = [await createPlayer(GREEN_PLAYER), await createPlayer(RED_PLAYER)];
     this.track = await createTrack(this.trackData);
     this.snowdriftExplosion = await createSnowdriftExplosion();
+    this.sky = await createSky();
 
-    // this.camera.position.set(0, 500, -100);
-    // this.camera.lookAt(new THREE.Vector3(0, 0, -100));
-    this.camera.position.set(0, 4, 20);
-    this.player.add(this.camera);
+    this.players.forEach((player, index) => player.add(this.cameras[index]));
 
-    this.scene.add(this.player, this.sky, this.track);
+    this.scene.add(this.track, this.sky, ...this.players);
   }
 
   handleRemoveObject = ({ body }) => {
@@ -73,19 +70,14 @@ export default class Engine3D {
   };
 
   updateViewport = () => {
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio || 1);
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    updateRenderer(this.renderer);
+    updateCameras(this.cameras);
   };
 
   syncWorld = () => {
-    ['player'].forEach((key) => {
-      const cannonObject = this.physics[key];
-      const threeObject = this[key];
-
-      threeObject.position.copy(cannonObject.position);
-      threeObject.quaternion.copy(cannonObject.quaternion);
+    this.players.forEach((player, index) => {
+      player.position.copy(this.physics.players[index].position);
+      player.quaternion.copy(this.physics.players[index].quaternion);
     });
 
     this.physics.dynamicObjects.forEach(object => {
@@ -99,11 +91,19 @@ export default class Engine3D {
     });
   };
 
-  render = (time) => {
-    TWEEN.update(time);
+  render = () => {
     this.syncWorld();
-    this.sky.position.copy(this.player.position);
-    this.renderer.render(this.scene, this.camera);
+
+    this.players.forEach((player, index) => {
+      const camera = this.cameras[index];
+
+      this.sky.position.copy(player.position);
+      this.renderer.setViewport(camera.userData.x, 0, camera.userData.width, window.innerHeight);
+      this.renderer.setScissor(camera.userData.x, 0, camera.userData.width, window.innerHeight);
+      this.renderer.setScissorTest(true);
+      this.renderer.render(this.scene, camera);
+    });
+
     this.cannonDebugRenderer.update();
   };
 }

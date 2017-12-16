@@ -41,5 +41,15 @@ export default function createWorld() {
     restitution: 0,
   }));
 
+  world.addContactMaterial(new CANNON.ContactMaterial(stoneMaterial, playerMaterial, {
+    friction: 0.01,
+    restitution: 0.9,
+  }));
+
+  world.addContactMaterial(new CANNON.ContactMaterial(playerMaterial, playerMaterial, {
+    friction: 0.01,
+    restitution: 0.99,
+  }));
+
   return world;
 }

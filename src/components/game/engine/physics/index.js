@@ -1,10 +1,13 @@
 import * as CANNON from 'cannon';
 import { identity } from 'ramda';
+import { flatten, uniq } from 'lodash';
 
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
+
+import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
 export default class Physics {
@@ -13,8 +16,12 @@ export default class Physics {
     this.trackData = trackData;
     this.world = createWorld();
 
-    this.player = createPlayer();
-    this.world.addBody(this.player);
+    this.players = [
+      createPlayer({ type: GREEN_PLAYER, position: { x: -10 } }),
+      createPlayer({ type: RED_PLAYER, position: { x: 10 } }),
+    ];
+
+    this.players.forEach(player => this.world.addBody(player));
 
     this.ground = createGround();
     this.world.addBody(this.ground);
@@ -28,8 +35,6 @@ export default class Physics {
         this.dynamicObjects.push(object);
       }
     });
-
-    this.rotation = 0;
   }
 
   onSnowdriftCollideHandler = identity;
@@ -39,17 +44,25 @@ export default class Physics {
   }
 
   clearWorld = () => {
-    this.player.userData.coinsToRemove.forEach(body => this.world.remove(body));
-    this.player.userData.coinsToRemove = [];
+    const coinsToRemove = uniq(flatten(this.players.map(player => player.userData.coinsToRemove)));
+    const snowdriftsToExplode = uniq(flatten(this.players.map(player => player.userData.snowdriftsToExplode)));
 
-    this.player.userData.snowdriftsToExplode.forEach(body => this.onSnowdriftCollideHandler(body));
-    this.player.userData.snowdriftsToExplode = [];
+    coinsToRemove.forEach(body => this.world.remove(body));
+    snowdriftsToExplode.forEach(body => this.onSnowdriftCollideHandler(body));
+
+    this.players.forEach((player) => {
+      player.userData.coinsToRemove = [];
+      player.userData.snowdriftsToExplode = [];
+    });
   };
 
   update() {
-    this.rotation = this.rotation + this.sensorData.getValue() * 0.003;
-    this.player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), this.rotation);
-    this.player.applyLocalForce(new CANNON.Vec3(0, 0, -this.player.userData.speed), new CANNON.Vec3(0, 0, 0));
+    this.players.forEach((player) => {
+      player.userData.rotation += this.sensorData.getValue(player.userData.type) * 0.003;
+      player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), player.userData.rotation);
+      player.applyLocalForce(new CANNON.Vec3(0, 0, -player.userData.speed), new CANNON.Vec3(0, 0, 0));
+    });
+
     this.world.step(1 / 60);
     this.clearWorld();
   }
