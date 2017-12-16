@@ -1,11 +1,11 @@
 import socketio from 'socket.io-client';
-import { PLAYER_GREEN, PLAYER_RED } from '../../../../server/helpers';
+import { GREEN_PLAYER, RED_PLAYER } from '../../../../server/helpers';
 
 
 export default class SensorData {
   sensors = {
-    [PLAYER_GREEN]: 0,
-    [PLAYER_RED]: 0,
+    [GREEN_PLAYER]: 0,
+    [RED_PLAYER]: 0,
   };
 
   constructor() {
@@ -22,16 +22,16 @@ export default class SensorData {
     window.addEventListener('keydown', ({ key }) => {
       switch (key) {
         case 'ArrowLeft':
-          this.sensors[PLAYER_GREEN] = 5;
+          this.sensors[RED_PLAYER] = 5;
           break;
         case 'ArrowRight':
-          this.sensors[PLAYER_GREEN] = -5;
+          this.sensors[RED_PLAYER] = -5;
           break;
         case 'a':
-          this.sensors[PLAYER_RED] = 5;
+          this.sensors[GREEN_PLAYER] = 5;
           break;
         case 'd':
-          this.sensors[PLAYER_RED] = -5;
+          this.sensors[GREEN_PLAYER] = -5;
           break;
         default:
       }
@@ -41,12 +41,12 @@ export default class SensorData {
       clearTimeout(this.keyboardTimeout);
 
       if (key === 'ArrowLeft' || key === 'ArrowRight') {
-        this.sensors[PLAYER_GREEN] = 0;
+        this.sensors[RED_PLAYER] = 0;
       } else if (key === 'a' || key === 'd') {
-        this.sensors[PLAYER_RED] = 0;
+        this.sensors[GREEN_PLAYER] = 0;
       }
     });
   }
 
-  getValue = (sensor = PLAYER_GREEN) => this.sensors[sensor];
+  getValue = (sensor = GREEN_PLAYER) => this.sensors[sensor];
 }

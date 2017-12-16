@@ -14,7 +14,7 @@ export const REDUCED_SPEED_INTERVAL = 500;
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 
-export default function createPlayer() {
+export default function createPlayer({ type, position }) {
   let speedModifierTimeoutId = null;
 
   let snowdriftCollisionFilter = false;
@@ -22,7 +22,7 @@ export default function createPlayer() {
 
   const player = new CANNON.Body({
     mass: 2,
-    position: new CANNON.Vec3(0, 5, 0),
+    position: new CANNON.Vec3(position.x, 1.5, 0),
     shape: new CANNON.Sphere(1.5),
     fixedRotation: true,
     linearDamping: 0.95,
@@ -79,9 +79,11 @@ export default function createPlayer() {
   });
 
   player.userData = {
+    type,
     speed: INITIAL_SPEED,
     coinsToRemove: [],
     snowdriftsToExplode: [],
+    rotation: 0,
   };
 
   return player;

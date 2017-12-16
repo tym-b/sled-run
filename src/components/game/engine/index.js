@@ -1,5 +1,8 @@
+import TWEEN from 'tween.js';
+
 import Physics from './physics';
 import Engine3D from './3d';
+
 import createTrack, {
   TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_LEFT,
@@ -30,6 +33,9 @@ export default class Engine {
 
   loop = (time) => {
     requestAnimationFrame(this.loop);
+
+    TWEEN.update(time);
+
     this.physics.update(time);
     this.engine3d.render(time);
   };

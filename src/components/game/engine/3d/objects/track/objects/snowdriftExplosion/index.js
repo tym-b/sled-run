@@ -43,7 +43,7 @@ export function explode(snowdriftExplosion) {
       .onComplete(resolve)
       .start();
 
-    snowdriftExplosion.onBeforeRender = () => { // eslint-disable-line no-param-reassign
+    snowdriftExplosion.onBeforeRender = () => {
       const { scale, offset } = explosionParams;
 
       snowdriftExplosion.scale.setScalar(scale);
