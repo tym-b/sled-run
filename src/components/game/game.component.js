@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
 
 import Engine from './engine';
-
+import SensorData from './sensorData';
 
 export default class Game extends PureComponent {
   componentDidMount() {
-    this.engine = new Engine(this.renderTarget);
-
+    this.engine = new Engine(this.renderTarget, new SensorData());
     window.addEventListener('resize', this.engine.updateViewport);
   }
 

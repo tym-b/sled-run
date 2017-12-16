@@ -6,8 +6,8 @@ import Game from 'components/game/game.component';
 const routes = (
   <BrowserRouter>
     <div>
-      <Route path="/game" component={Game} />
-      <Route path="/sensor" component={Sensor} />
+      <Route path="/game/" component={Game} />
+      <Route path="/sensor/" component={Sensor} />
     </div>
   </BrowserRouter>
 );
