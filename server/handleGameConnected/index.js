@@ -4,4 +4,4 @@ const handleGameConnected = (socket, game, id) => () => {
   console.log(`Game client connected with id: ${id}`);
 };
 
-module.exports = handleGameConnected;
+export default handleGameConnected;

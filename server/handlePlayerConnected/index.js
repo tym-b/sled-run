@@ -1,6 +1,7 @@
-const handlePlayerConnected = (players, id) => ({ type }) => {
+const handlePlayerConnected = (socket, players, id) => ({ type }) => {
   console.log(`Player ${type} connected with id: ${id}`);
+  socket.join(type);
   players[type] = id;
 };
 
-module.exports = handlePlayerConnected;
+export default handlePlayerConnected;

@@ -1,7 +1,8 @@
-const handleDisconnect = require('../handleDisconnect');
-const handlePlayerConnected = require('../handlePlayerConnected');
-const handleGameConnected = require('../handleGameConnected');
-const handleDeviceMove = require('../handleDeviceMove');
+import handleDisconnect from '../handleDisconnect';
+import handlePlayerConnected from '../handlePlayerConnected';
+import handleGameConnected from '../handleGameConnected';
+import handleDeviceMove from '../handleDeviceMove';
+import handlePlayerCollided from '../handlePlayerCollided';
 
 const handleConnection = ({ io, players, game }) => (socket) => {
   const { id } = socket;
@@ -9,8 +10,9 @@ const handleConnection = ({ io, players, game }) => (socket) => {
 
   socket.on('disconnect', handleDisconnect(players, id));
   socket.on('gameConnected', handleGameConnected(socket, game, id));
-  socket.on('playerConnected', handlePlayerConnected(players, id));
+  socket.on('playerConnected', handlePlayerConnected(socket, players, id));
   socket.on('deviceMove', handleDeviceMove(io, players, id));
+  socket.on('playerCollided', handlePlayerCollided(io));
 };
 
-module.exports = handleConnection;
+export default handleConnection;

@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "webpack-dev-server --hot --port 3002 --host 0.0.0.0",
-    "server": "babel-watch server",
+    "server": "babel-watch ./server/main",
     "production": "babel-node server",
     "test": "jest",
     "test:watch": "jest --watch",

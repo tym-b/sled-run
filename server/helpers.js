@@ -1,15 +1,10 @@
 const { propEq, always, ifElse } = require('ramda');
 
-const RED_PLAYER = 'red';
-const GREEN_PLAYER = 'green';
-const getPlayerTypeById = (players, id) => ifElse(
+export const RED_PLAYER = 'red';
+export const GREEN_PLAYER = 'green';
+export const playersTypes = [GREEN_PLAYER, RED_PLAYER];
+export const getPlayerTypeById = (players, id) => ifElse(
   propEq(GREEN_PLAYER, id),
   always(GREEN_PLAYER),
   always(RED_PLAYER)
 )(players);
-
-module.exports = {
-  RED_PLAYER,
-  GREEN_PLAYER,
-  getPlayerTypeById,
-};

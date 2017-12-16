@@ -1,5 +1,6 @@
 import * as CANNON from 'cannon';
 import TWEEN from 'tween.js';
+import { identity } from 'ramda';
 
 import { COIN_MATERIAL_NAME } from './track/objects/coin';
 import { SNOWDRIFT_MATERIAL_NAME } from './track/objects/snowdrift';
@@ -14,7 +15,7 @@ export const REDUCED_SPEED_INTERVAL = 500;
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 
-export default function createPlayer({ type, position }) {
+export default function createPlayer({ type, position, onCollide = identity }) {
   let speedModifierTimeoutId = null;
 
   let snowdriftCollisionFilter = false;
@@ -64,6 +65,8 @@ export default function createPlayer({ type, position }) {
   };
 
   player.addEventListener('collide', ({ body }) => {
+    onCollide(type);
+
     switch (body.material.name) {
       case COIN_MATERIAL_NAME:
         handleCoinCollide(body);
