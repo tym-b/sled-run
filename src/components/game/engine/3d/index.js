@@ -5,6 +5,7 @@ import createScene from './scene';
 import createCameras, { updateCameras } from './cameras';
 import createRenderer, { updateRenderer } from './renderer';
 import createLight from './light';
+import createSnow from './objects/snow';
 
 import createPlayer from './objects/player';
 import createSky from './objects/sky';
@@ -44,10 +45,11 @@ export default class Engine3D {
     this.track = await createTrack(this.trackData);
     this.snowdriftExplosion = await createSnowdriftExplosion();
     this.sky = await createSky();
+    this.snow = await createSnow();
 
     this.players.forEach((player, index) => player.add(this.cameras[index]));
 
-    this.scene.add(this.track, this.sky, ...this.players);
+    this.scene.add(this.track, this.sky, ...this.players, this.snow);
   }
 
   handleRemoveObject = ({ body }) => {
@@ -98,10 +100,12 @@ export default class Engine3D {
       const camera = this.cameras[index];
 
       this.sky.position.copy(player.position);
+      camera.add(this.snow);
       this.renderer.setViewport(camera.userData.x, 0, camera.userData.width, window.innerHeight);
       this.renderer.setScissor(camera.userData.x, 0, camera.userData.width, window.innerHeight);
       this.renderer.setScissorTest(true);
       this.renderer.render(this.scene, camera);
+      camera.remove(this.snow);
     });
 
     this.cannonDebugRenderer.update();
