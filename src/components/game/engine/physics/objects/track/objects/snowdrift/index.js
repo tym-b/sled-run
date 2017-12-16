@@ -6,7 +6,7 @@ export const material = new CANNON.Material(SNOWDRIFT_MATERIAL_NAME);
 export default function createSnowdrift({ position, id }) {
   const snowdrift = new CANNON.Body({
     mass: 0,
-    position: new CANNON.Vec3(position.x, 1.5, -position.y),
+    position: new CANNON.Vec3(position.x, -1, -position.y),
     shape: new CANNON.Sphere(3),
     material,
   });

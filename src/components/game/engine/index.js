@@ -4,6 +4,7 @@ import createTrack, {
   TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_LEFT,
   TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_END,
 } from './track';
 
 const TRACK = [
@@ -11,6 +12,7 @@ const TRACK = [
   TRACK_SEGMENT_LEFT,
   TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_END
 ];
 
 export default class Engine {

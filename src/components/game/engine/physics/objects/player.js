@@ -1,8 +1,9 @@
 import * as CANNON from 'cannon';
+import TWEEN from 'tween.js';
 
 import { COIN_MATERIAL_NAME } from './track/objects/coin';
 import { SNOWDRIFT_MATERIAL_NAME } from './track/objects/snowdrift';
-
+import { META_MATERIAL_NAME } from './track/objects/meta';
 
 export const INITIAL_SPEED = 500;
 export const BOOSTED_SPEED = 900;
@@ -24,7 +25,7 @@ export default function createPlayer() {
     position: new CANNON.Vec3(0, 5, 0),
     shape: new CANNON.Sphere(1.5),
     fixedRotation: true,
-    linearDamping: 0.99,
+    linearDamping: 0.95,
     material,
   });
 
@@ -55,6 +56,13 @@ export default function createPlayer() {
     }
   };
 
+  const handleMetaCollide = () => {
+    new TWEEN.Tween(player.userData)
+      .to({ speed: 0 }, 2000)
+      .easing(TWEEN.Easing.Cubic.Out)
+      .start();
+  };
+
   player.addEventListener('collide', ({ body }) => {
     switch (body.material.name) {
       case COIN_MATERIAL_NAME:
@@ -62,6 +70,9 @@ export default function createPlayer() {
         break;
       case SNOWDRIFT_MATERIAL_NAME:
         handleSnowdriftCollide(body);
+        break;
+      case META_MATERIAL_NAME:
+        handleMetaCollide(body);
         break;
       default:
     }

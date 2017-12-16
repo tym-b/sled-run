@@ -5,6 +5,7 @@ import segmentsData from './segmentsData';
 export const TRACK_SEGMENT_STRAIGHT = 'straight';
 export const TRACK_SEGMENT_LEFT = 'left';
 export const TRACK_SEGMENT_RIGHT = 'right';
+export const TRACK_SEGMENT_END = 'end';
 
 
 export function turnClockwise({ x, y }, turns) {
