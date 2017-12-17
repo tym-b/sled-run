@@ -18,6 +18,9 @@ export const createTexturizedObject = async (objectJson, textureUrl) => {
 export const createGround = async (objectJson) => {
   const geometry = await parseObject(objectJson);
   const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const mesh = new THREE.Mesh(geometry, material);
 
-  return new THREE.Mesh(geometry, material);
+  mesh.receiveShadow = true;
+
+  return mesh;
 };

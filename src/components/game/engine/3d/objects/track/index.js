@@ -23,9 +23,12 @@ export default async function createTrack(trackData) {
 
     segment.position.set(offset.x, 0, -offset.y);
     segment.rotation.set(0, -clockwiseTurns / 2 * Math.PI, 0);
+    segment.receiveShadow = true;
 
     track.add(segment);
   });
+
+  track.receiveShadow = true;
 
   return track;
 }

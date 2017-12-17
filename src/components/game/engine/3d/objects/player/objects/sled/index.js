@@ -4,5 +4,9 @@ import texture from './sled.jpg';
 
 
 export default function createSanta() {
-  return createTexturizedObject(geometry, texture);
+  const mesh = createTexturizedObject(geometry, texture);
+
+  mesh.castShadow = true;
+
+  return mesh;
 }

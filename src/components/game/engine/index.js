@@ -11,7 +11,6 @@ import createTrack, {
 } from './track';
 
 const TRACK = [
-  TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_LEFT,
   // TRACK_SEGMENT_STRAIGHT,
   // TRACK_SEGMENT_RIGHT,

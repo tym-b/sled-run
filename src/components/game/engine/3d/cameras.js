@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 
 const CAMERAS = [
-  { x: 0, width: 0.5 },
-  { x: 0.5, width: 0.5 },
+  { x: 0, width: 0 },
+  { x: 0, width: 1 },
 ];
 
 export default function createCameras() {

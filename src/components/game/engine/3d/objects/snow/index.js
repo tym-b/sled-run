@@ -5,7 +5,7 @@ import particleTexture from './snow-particle.png';
 import { loadTexture } from '../../utils';
 
 
-export default async function createSnowdriftExplosion() {
+export default async function createSnow() {
   const texture = await loadTexture(particleTexture);
   const geometry = new THREE.Geometry();
   const material = new THREE.PointsMaterial({
