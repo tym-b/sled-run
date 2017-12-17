@@ -6125,6 +6125,10 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.2.tgz#b5fdc08f1287ea1178628e415e25132b73646c6d"
 
+simplex-noise@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/simplex-noise/-/simplex-noise-2.3.0.tgz#317e0db8f10ef34d058c6619e7b67657de131d26"
+
 slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"

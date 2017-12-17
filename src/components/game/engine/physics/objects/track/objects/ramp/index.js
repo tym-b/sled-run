@@ -4,9 +4,9 @@ export const RAMP_MATERIAL_NAME = 'rampMaterial';
 export const material = new CANNON.Material(RAMP_MATERIAL_NAME);
 
 const boxes = [
-  { size: [6, 1, 3], offset: [0, -0.8, 5], rotation: 0.15 },
-  { size: [6, 1, 3], offset: [0, 0.1, -1], rotation: 0.2 },
-  { size: [6, 1, 3], offset: [0, 1.8, -7], rotation: 0.35 },
+  { size: [4, 1, 3], offset: [0, -0.8, 5], rotation: 0.15 },
+  { size: [4, 1, 3], offset: [0, 0.1, -1], rotation: 0.2 },
+  { size: [4, 1, 3], offset: [0, 1.8, -7], rotation: 0.35 },
 ];
 
 

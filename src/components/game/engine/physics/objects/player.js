@@ -23,12 +23,15 @@ export default function createPlayer({ type, position, onCollide = identity }) {
 
   const player = new CANNON.Body({
     mass: 2,
-    position: new CANNON.Vec3(position.x, 1.5, 0),
-    shape: new CANNON.Sphere(1.5),
+    position: new CANNON.Vec3(position.x, 1, 0),
     fixedRotation: true,
     linearDamping: 0.95,
     material,
   });
+
+  player.addShape(new CANNON.Box(new CANNON.Vec3(1.5, 0.5, 3)), new CANNON.Vec3(0, 0, -1.5));
+  player.addShape(new CANNON.Sphere(1.5), new CANNON.Vec3(0, 0, -5));
+  player.addShape(new CANNON.Sphere(1.5), new CANNON.Vec3(0, 0, 1));
 
   const modifySpeed = (speed, time) => {
     player.userData.speed = speed;

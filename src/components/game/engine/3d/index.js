@@ -4,7 +4,7 @@ import * as CANNON from 'cannon';
 import createScene from './scene';
 import createCameras, { updateCameras } from './cameras';
 import createRenderer, { updateRenderer } from './renderer';
-import createLight from './light';
+import createLight, { createPlayerLight } from './light';
 import createSnow from './objects/snow';
 
 import createPlayer from './objects/player';
@@ -25,6 +25,7 @@ export default class Engine3D {
   cameras = createCameras();
   renderer = createRenderer();
   light = createLight();
+  playerLights = [createPlayerLight(), createPlayerLight()];
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
@@ -47,9 +48,14 @@ export default class Engine3D {
     this.sky = await createSky();
     this.snow = await createSnow();
 
-    this.players.forEach((player, index) => player.add(this.cameras[index]));
+    this.players.forEach((player, index) => player.add(this.cameras[index], this.playerLights[index]));
 
-    this.scene.add(this.track, this.sky, ...this.players, this.snow);
+    // this.debugCamera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
+    // this.debugCamera.position.set(0, 100, 0);
+    // this.debugCamera.lookAt(new THREE.Vector3(0, 0, 0));
+    // this.scene.add(this.debugCamera);
+
+    this.scene.add(this.track, this.sky, ...this.players, this.snow, new THREE.PointLightHelper(playerLights[1], 3));
   }
 
   handleRemoveObject = ({ body }) => {
@@ -107,6 +113,8 @@ export default class Engine3D {
       this.renderer.render(this.scene, camera);
       camera.remove(this.snow);
     });
+
+    // this.renderer.render(this.scene, this.debugCamera);
 
     this.cannonDebugRenderer.update();
   };
