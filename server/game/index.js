@@ -63,7 +63,7 @@ export default class Game {
     console.log(`Player '${type}' disconnected.`);
 
     this.clients[type] = null;
-    this.socket.to(GAME).emit('playerDisonnected', { type });
+    this.socket.to(GAME).emit('playerDisconnected', { type });
   }
 
   handleDeviceMove = (id) => ({ position }) => {

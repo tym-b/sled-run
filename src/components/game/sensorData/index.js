@@ -1,4 +1,3 @@
-import socketio from 'socket.io-client';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../../server/helpers';
 
 export default class SensorData {
@@ -7,12 +6,8 @@ export default class SensorData {
     [RED_PLAYER]: 0,
   };
 
-  socket = socketio(`${window.location.hostname}:8181`);
-
-  constructor() {
-    this.socket.on('connect', this.handleConnect);
-    this.socket.on('deviceMoveChanged', this.handleDeviceMoveChanged);
-
+  constructor({ onCollide }) {
+    this.sendPlayerCollideEvent = onCollide;
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
   }
@@ -43,11 +38,7 @@ export default class SensorData {
     }
   };
 
-  handleConnect = () => this.socket.emit('gameConnected');
-
   handleDeviceMoveChanged = ({ type, position }) => (this.sensors[type] = position);
-
-  sendPlayerCollideEvent = (type) => this.socket.emit('playerCollided', { type });
 
   getValue = (sensor = GREEN_PLAYER) => this.sensors[sensor];
 }
