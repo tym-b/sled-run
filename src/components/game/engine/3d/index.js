@@ -7,7 +7,7 @@ import createRenderer, { updateRenderer } from './renderer';
 import createLight, { createPlayerLights } from './light';
 import createSnow from './objects/snow';
 
-import createPlayer from './objects/player';
+import createPlayer, { update } from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
 import createSnowdriftExplosion, { explode } from './objects/track/objects/snowdriftExplosion';
@@ -50,12 +50,10 @@ export default class Engine3D {
 
     this.players.forEach((player, index) => player.add(this.cameras[index], this.playerLights[index]));
 
-    this.debugCamera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
-    this.debugCamera.position.set(0, 300, -100);
-    this.debugCamera.lookAt(new THREE.Vector3(0, 0, -100));
-    this.scene.add(this.debugCamera);
-
-    // this.scene.add(new THREE.DirectionalLightHelper(this.playerLights[1], 3));
+    // this.debugCamera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
+    // this.debugCamera.position.set(0, 300, -100);
+    // this.debugCamera.lookAt(new THREE.Vector3(0, 0, -100));
+    // this.scene.add(this.debugCamera);
 
     this.scene.add(this.track, this.sky, ...this.players);
   }
@@ -88,6 +86,8 @@ export default class Engine3D {
     this.players.forEach((player, index) => {
       player.position.copy(this.physics.players[index].position);
       player.quaternion.copy(this.physics.players[index].quaternion);
+      player.userData.velocity = this.physics.players[index].velocity;
+      player.userData.angle = this.physics.players[index].userData.angle;
     });
 
     this.physics.dynamicObjects.forEach(object => {
@@ -101,22 +101,23 @@ export default class Engine3D {
     });
   };
 
-  render = () => {
+  render = (time) => {
+    update(time);
     this.syncWorld();
-    //
-    // this.players.forEach((player, index) => {
-    //   const camera = this.cameras[index];
-    //
-    //   this.sky.position.copy(player.position);
-    //   camera.add(this.snow);
-    //   this.renderer.setViewport(camera.userData.x, 0, camera.userData.width, window.innerHeight);
-    //   this.renderer.setScissor(camera.userData.x, 0, camera.userData.width, window.innerHeight);
-    //   this.renderer.setScissorTest(true);
-    //   this.renderer.render(this.scene, camera);
-    //   camera.remove(this.snow);
-    // });
 
-    this.renderer.render(this.scene, this.debugCamera);
+    this.players.forEach((player, index) => {
+      const camera = this.cameras[index];
+
+      this.sky.position.copy(player.position);
+      camera.add(this.snow);
+      this.renderer.setViewport(camera.userData.x, 0, camera.userData.width, window.innerHeight);
+      this.renderer.setScissor(camera.userData.x, 0, camera.userData.width, window.innerHeight);
+      this.renderer.setScissorTest(true);
+      this.renderer.render(this.scene, camera);
+      camera.remove(this.snow);
+    });
+
+    // this.renderer.render(this.scene, this.debugCamera);
 
     this.cannonDebugRenderer.update();
   };

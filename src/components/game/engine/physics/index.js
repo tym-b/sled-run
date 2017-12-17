@@ -64,7 +64,8 @@ export default class Physics {
 
   update() {
     this.players.forEach((player) => {
-      player.userData.rotation += this.sensorData.getValue(player.userData.type) * 0.003;
+      player.userData.angle = this.sensorData.getValue(player.userData.type);
+      player.userData.rotation += player.userData.angle * 0.003;
       player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), player.userData.rotation);
       player.applyLocalForce(new CANNON.Vec3(0, 0, -player.userData.speed), new CANNON.Vec3(0, 0, 0));
     });

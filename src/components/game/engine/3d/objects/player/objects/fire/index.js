@@ -6,7 +6,7 @@ import objectJson from './fire.json';
 
 const simplex = new SimplexNoise();
 
-export function animateFire({ geometry, userData: { initialVertices, initialVerticesNormalized } }, time) {
+export function animateFire({ geometry, userData: { initialVertices, initialVerticesNormalized, noiseModifier } }, time, boost = 0.3) {
   geometry.vertices.forEach((vertice, index) => {
     const initialVertice = initialVertices[index];
     const initialVerticeNormalized = initialVerticesNormalized[index];
@@ -14,9 +14,9 @@ export function animateFire({ geometry, userData: { initialVertices, initialVert
     vertice
       .copy(initialVertice)
       .addScaledVector(initialVerticesNormalized[index], simplex.noise2D(
-        initialVerticeNormalized.x + time,
-        initialVerticeNormalized.y
-      ) * 0.3);
+        initialVerticeNormalized.x + time * 0.01,
+        initialVerticeNormalized.y + noiseModifier,
+      ) * boost);
   });
 
   geometry.verticesNeedUpdate = true;
@@ -25,17 +25,11 @@ export function animateFire({ geometry, userData: { initialVertices, initialVert
 export default async function createFire() {
   const geometry = await parseObject(objectJson);
   const material = new THREE.MeshLambertMaterial({ color: 0xffff5d });
-  const fire = new THREE.Mesh(geometry, material);
-
-  let time = 0;
+  const fire = new THREE.Mesh(geometry.clone(), material);
 
   fire.userData.initialVertices = geometry.vertices.map(v => v.clone());
   fire.userData.initialVerticesNormalized = geometry.vertices.map(v => v.clone().normalize());
-
-  fire.onBeforeRender = () => {
-    time += 0.1;
-    animateFire(fire, time);
-  };
+  fire.userData.noiseModifier = Math.random();
 
   return fire;
 }

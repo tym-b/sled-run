@@ -6,15 +6,9 @@ export default function createLight() {
 }
 
 export function createPlayerLights() {
-  const light = new THREE.SpotLight(0xffffff, 1, 0, Math.PI / 2);
+  const light = new THREE.PointLight(0xffffff, 2, 50);
 
-  light.position.set(-300, 1000, 100);
-  light.castShadow = true;
-  light.shadow.mapSize.width = 1024;
-  light.shadow.mapSize.height = 1024;
-  light.shadow.camera.near = 500;
-  light.shadow.camera.far = 4000;
-  light.shadow.camera.fov = 30;
+  light.position.set(-0, 40, 0);
 
-  return [light.clone(), light];
+  return [light, light.clone()];
 }
