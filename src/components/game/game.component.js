@@ -13,6 +13,8 @@ export default class Game extends PureComponent {
   }
 
   componentDidMount() {
+    this.sensorData = new SensorData({ onCollide: this.handlePlayerCollided });
+
     this.socket.on('connect', this.handleConnect);
     this.socket.on('playerConnected', this.handlePlayerConnected);
     this.socket.on('playerDisconnected', this.handlePlayerDisconnected);
@@ -27,7 +29,6 @@ export default class Game extends PureComponent {
   }
 
   socket = socketio(`${window.location.hostname}:8181`);
-  sensorData = new SensorData({ onCollide: this.handlePlayerCollided });
 
   handlePlayerCollided = (type) => this.socket.emit('playerCollided', { type });
   handleConnect = () => this.socket.emit('gameConnected');
