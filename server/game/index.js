@@ -8,6 +8,7 @@ export default class Game {
   }
 
   gameStarted = false;
+  gameIsReady = false;
   clients = {
     [GAME]: null,
     [GREEN_PLAYER]: null,

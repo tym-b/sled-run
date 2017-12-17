@@ -60,7 +60,6 @@ export default class Game extends PureComponent {
     <div>
       {/*<StartOverlay />*/}
       {/*<FinishedOverlay />*/}
-      {/*<WaitingForPlayersOverlay />*/}
       <SplitScreenOverlay
         leftSide={this.renderSide(GREEN_PLAYER)}
         rightSide={this.renderSide(RED_PLAYER)}
