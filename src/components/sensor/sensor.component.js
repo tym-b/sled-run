@@ -3,9 +3,8 @@ import { throttle } from 'lodash';
 import { pipe, prop, contains, ifElse, equals } from 'ramda';
 import socketio from 'socket.io-client';
 import qs from 'query-string';
-import { PLAYER_GREEN, PLAYER_RED } from '../../../server/helpers';
+import { playersTypes } from '../../../server/helpers';
 
-const playersTypes = [PLAYER_GREEN, PLAYER_RED];
 const CONNECTING = 'connecting';
 const CONNECTED = 'connected';
 const DISCONNECTED = 'disconnected';
@@ -26,6 +25,7 @@ export default class Sensor extends PureComponent {
     this.socket = socketio(`${window.location.hostname}:8181`);
     this.socket.on('connect', this.handleConnect);
     this.socket.on('disconnect', this.handleDisconnect);
+    this.socket.on('detectedCollision', this.handleDetectedCollision);
   }
 
   componentWillUnmount() {
@@ -37,6 +37,8 @@ export default class Sensor extends PureComponent {
   prevPosition = 0;
 
   handleDisconnect = () => this.setState({ status: DISCONNECTED });
+
+  handleDetectedCollision = () => navigator.vibrate([150, 50, 300]);
 
   handleConnect = () => {
     this.setState({ status: CONNECTED });

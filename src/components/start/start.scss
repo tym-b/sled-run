@@ -1,0 +1,85 @@
+@import "../../styles/variables";
+
+.container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $color-blue-transparent;
+}
+
+.logo {
+  width: 18%;
+  height: auto;
+}
+
+.ellipse {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.ellipse-wrapper {
+  width: 21%;
+  position: relative;
+  margin-top: 7%;
+}
+
+.content-wrapper {
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  border: 0;
+  background: none;
+  font-size: 30px;
+  color: white;
+  font-weight: 900;
+  transition: all ease-in-out .3s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+
+  @include big-desktop {
+    font-size: 45px;
+  }
+
+  &:hover {
+    opacity: 0.8;
+    transform: scale(0.8);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.counter {
+  font-size: 150px;
+  color: white;
+  font-weight: 900;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include big-desktop {
+    font-size: 205px;
+  }
+}

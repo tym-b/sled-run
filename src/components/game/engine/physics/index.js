@@ -1,5 +1,5 @@
 import * as CANNON from 'cannon';
-import { identity } from 'ramda';
+import { identity, when, both, isNil, complement } from 'ramda';
 import { flatten, uniq } from 'lodash';
 
 import createGround from './objects/ground';
@@ -17,8 +17,8 @@ export default class Physics {
     this.world = createWorld();
 
     this.players = [
-      createPlayer({ type: GREEN_PLAYER, position: { x: -10 } }),
-      createPlayer({ type: RED_PLAYER, position: { x: 10 } }),
+      createPlayer({ type: GREEN_PLAYER, position: { x: -10 }, onCollide: this.handlePlayerCollide }),
+      createPlayer({ type: RED_PLAYER, position: { x: 10 }, onCollide: this.handlePlayerCollide }),
     ];
 
     this.players.forEach(player => this.world.addBody(player));
@@ -42,6 +42,12 @@ export default class Physics {
   set onSnowdriftCollide(fn) {
     this.onSnowdriftCollideHandler = fn;
   }
+
+  handlePlayerCollide = (type) => {
+    if (this.sensorData && type) {
+      this.sensorData.sendPlayerCollideEvent(type);
+    }
+  };
 
   clearWorld = () => {
     const coinsToRemove = uniq(flatten(this.players.map(player => player.userData.coinsToRemove)));
