@@ -4,20 +4,19 @@ import * as CANNON from 'cannon';
 import createScene from './scene';
 import createCameras, { updateCameras } from './cameras';
 import createRenderer, { updateRenderer } from './renderer';
-import createLight from './light';
+import createLight, { createPlayerLights } from './light';
 import createSnow from './objects/snow';
 
-import createPlayer from './objects/player';
+import createPlayer, { update } from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
-import createSnowdriftExplosion, { explode } from './objects/track/objects/snowdriftExplosion';
+import createPuddleExplosion, { explode } from './objects/track/objects/puddleExplosion';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
-window.THREE = THREE;
-window.CANNON = CANNON;
-
-require('cannon/tools/threejs/CannonDebugRenderer');
+// window.THREE = THREE;
+// window.CANNON = CANNON;
+// require('cannon/tools/threejs/CannonDebugRenderer');
 
 
 export default class Engine3D {
@@ -25,17 +24,18 @@ export default class Engine3D {
   cameras = createCameras();
   renderer = createRenderer();
   light = createLight();
+  playerLights = createPlayerLights();
 
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
     this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
-    this.physics.onSnowdriftCollide = this.handleSnowdriftCollide;
+    this.physics.onPuddleCollide = this.handlePuddleCollide;
 
     this.trackData = trackData;
 
     this.scene.add(this.light);
 
-    this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    // this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
 
     renderTarget.appendChild(this.renderer.domElement);
   }
@@ -43,13 +43,18 @@ export default class Engine3D {
   async load() {
     this.players = [await createPlayer(GREEN_PLAYER), await createPlayer(RED_PLAYER)];
     this.track = await createTrack(this.trackData);
-    this.snowdriftExplosion = await createSnowdriftExplosion();
+    this.puddleExplosion = await createPuddleExplosion();
     this.sky = await createSky();
     this.snow = await createSnow();
 
-    this.players.forEach((player, index) => player.add(this.cameras[index]));
+    this.players.forEach((player, index) => player.add(this.cameras[index], this.playerLights[index]));
 
-    this.scene.add(this.track, this.sky, ...this.players, this.snow);
+    // this.debugCamera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
+    // this.debugCamera.position.set(0, 300, -100);
+    // this.debugCamera.lookAt(new THREE.Vector3(0, 0, -100));
+    // this.scene.add(this.debugCamera);
+
+    this.scene.add(this.track, this.sky, ...this.players);
   }
 
   handleRemoveObject = ({ body }) => {
@@ -57,18 +62,18 @@ export default class Engine3D {
     objectToRemove.parent.remove(objectToRemove);
   };
 
-  handleSnowdriftCollide = async (body) => {
-    const snowdrift = this.scene.getObjectByName(body.userData.name);
-    const snowdriftWorldPosition = snowdrift.parent.localToWorld(snowdrift.position.clone());
-    const snowdriftExplosion = this.snowdriftExplosion.clone();
+  handlePuddleCollide = async (body) => {
+    const puddle = this.scene.getObjectByName(body.userData.name);
+    const puddleWorldPosition = puddle.parent.localToWorld(puddle.position.clone());
+    const puddleExplosion = this.puddleExplosion.clone();
 
-    snowdriftExplosion.position.copy(snowdriftWorldPosition);
+    puddleExplosion.position.copy(puddleWorldPosition);
 
-    this.scene.add(snowdriftExplosion);
+    this.scene.add(puddleExplosion);
 
-    await explode(snowdriftExplosion);
+    await explode(puddleExplosion);
 
-    this.scene.remove(snowdriftExplosion);
+    this.scene.remove(puddleExplosion);
   };
 
   updateViewport = () => {
@@ -80,6 +85,8 @@ export default class Engine3D {
     this.players.forEach((player, index) => {
       player.position.copy(this.physics.players[index].position);
       player.quaternion.copy(this.physics.players[index].quaternion);
+      player.userData.velocity = this.physics.players[index].velocity;
+      player.userData.angle = this.physics.players[index].userData.angle;
     });
 
     this.physics.dynamicObjects.forEach(object => {
@@ -93,7 +100,8 @@ export default class Engine3D {
     });
   };
 
-  render = () => {
+  render = (time) => {
+    update(time);
     this.syncWorld();
 
     this.players.forEach((player, index) => {
@@ -108,6 +116,7 @@ export default class Engine3D {
       camera.remove(this.snow);
     });
 
-    this.cannonDebugRenderer.update();
+    // this.renderer.render(this.scene, this.debugCamera);
+    // this.cannonDebugRenderer.update();
   };
 }

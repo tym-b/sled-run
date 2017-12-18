@@ -14,3 +14,13 @@ export const createTexturizedObject = async (objectJson, textureUrl) => {
 
   return new THREE.Mesh(geometry, material);
 };
+
+export const createGround = async (objectJson) => {
+  const geometry = await parseObject(objectJson);
+  const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const mesh = new THREE.Mesh(geometry, material);
+
+  mesh.renderOrder = -1;
+
+  return mesh;
+};

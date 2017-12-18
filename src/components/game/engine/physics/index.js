@@ -1,9 +1,9 @@
 import * as CANNON from 'cannon';
 import { identity } from 'ramda';
-import { flatten, uniq } from 'lodash';
+import { flatten, uniq, remove } from 'lodash';
 
 import createGround from './objects/ground';
-import createPlayer from './objects/player';
+import createPlayer, { INITIAL_SPEED } from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
 
@@ -11,14 +11,25 @@ import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
 export default class Physics {
-  constructor(trackData, sensorData) {
+  constructor(trackData, sensorData, audio) {
     this.sensorData = sensorData;
     this.trackData = trackData;
+    this.audio = audio;
     this.world = createWorld();
 
     this.players = [
-      createPlayer({ type: GREEN_PLAYER, position: { x: -10 } }),
-      createPlayer({ type: RED_PLAYER, position: { x: 10 } }),
+      createPlayer({
+        type: GREEN_PLAYER,
+        position: { x: -10 },
+        onCollide: this.handlePlayerCollide,
+        onFinish: this.handlePlayerFinish,
+      }, this.audio),
+      createPlayer({
+        type: RED_PLAYER,
+        position: { x: 10 },
+        onCollide: this.handlePlayerCollide,
+        onFinish: this.handlePlayerFinish,
+      }, this.audio),
     ];
 
     this.players.forEach(player => this.world.addBody(player));
@@ -31,34 +42,59 @@ export default class Physics {
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
 
-      if (object.type === CANNON.Body.DYNAMIC) {
+      if (object.type !== CANNON.Body.STATIC) {
         this.dynamicObjects.push(object);
       }
     });
   }
 
-  onSnowdriftCollideHandler = identity;
+  onPuddleCollideHandler = identity;
+  onFinishHandler = identity;
 
-  set onSnowdriftCollide(fn) {
-    this.onSnowdriftCollideHandler = fn;
+  set onPuddleCollide(fn) {
+    this.onPuddleCollideHandler = fn;
   }
 
-  clearWorld = () => {
-    const coinsToRemove = uniq(flatten(this.players.map(player => player.userData.coinsToRemove)));
-    const snowdriftsToExplode = uniq(flatten(this.players.map(player => player.userData.snowdriftsToExplode)));
+  set onFinish(fn) {
+    this.onFinishHandler = fn;
+  }
 
-    coinsToRemove.forEach(body => this.world.remove(body));
-    snowdriftsToExplode.forEach(body => this.onSnowdriftCollideHandler(body));
+  handlePlayerCollide = (type) => {
+    if (this.sensorData && type) {
+      this.sensorData.sendPlayerCollideEvent(type);
+    }
+  };
+
+  handlePlayerFinish = (body) => {
+    this.onFinishHandler(body.userData.type);
+  };
+
+  start = () => {
+    this.players.forEach((player) => {
+      player.userData.speed = INITIAL_SPEED;
+    });
+  };
+
+  clearWorld = () => {
+    const nitrosToRemove = uniq(flatten(this.players.map(player => player.userData.nitrosToRemove)));
+    const puddlesToExplode = uniq(flatten(this.players.map(player => player.userData.puddlesToExplode)));
+
+    nitrosToRemove.forEach(body => {
+      this.world.remove(body);
+      remove(this.dynamicObjects, o => o === body);
+    });
+    puddlesToExplode.forEach(body => this.onPuddleCollideHandler(body));
 
     this.players.forEach((player) => {
-      player.userData.coinsToRemove = [];
-      player.userData.snowdriftsToExplode = [];
+      player.userData.nitrosToRemove = [];
+      player.userData.puddlesToExplode = [];
     });
   };
 
   update() {
     this.players.forEach((player) => {
-      player.userData.rotation += this.sensorData.getValue(player.userData.type) * 0.003;
+      player.userData.angle = this.sensorData.getValue(player.userData.type);
+      player.userData.rotation += player.userData.angle * 0.003;
       player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), player.userData.rotation);
       player.applyLocalForce(new CANNON.Vec3(0, 0, -player.userData.speed), new CANNON.Vec3(0, 0, 0));
     });
