@@ -1,6 +1,6 @@
 import { createTexturizedObject } from '../../../../utils';
-import geometry from './coin.json';
-import texture from './coin.jpg';
+import geometry from './nitro.json';
+import texture from './nitro.jpg';
 
 
 export default function createGroundStraight() {

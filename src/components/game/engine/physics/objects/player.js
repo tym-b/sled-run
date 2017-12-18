@@ -2,7 +2,7 @@ import * as CANNON from 'cannon';
 import TWEEN from 'tween.js';
 import { identity } from 'ramda';
 
-import { COIN_MATERIAL_NAME } from './track/objects/coin';
+import { NITRO_MATERIAL_NAME } from './track/objects/nitro';
 import { PUDDLE_MATERIAL_NAME } from './track/objects/puddle';
 import { META_MATERIAL_NAME } from './track/objects/meta';
 
@@ -44,8 +44,8 @@ export default function createPlayer({ type, position, onCollide = identity }) {
     }, time);
   };
 
-  const handleCoinCollide = (body) => {
-    player.userData.coinsToRemove.push(body);
+  const handleNitroCollide = (body) => {
+    player.userData.nitrosToRemove.push(body);
     modifySpeed(BOOSTED_SPEED, BOOSTED_SPEED_INTERVAL);
   };
 
@@ -71,8 +71,8 @@ export default function createPlayer({ type, position, onCollide = identity }) {
     onCollide(type);
 
     switch (body.material.name) {
-      case COIN_MATERIAL_NAME:
-        handleCoinCollide(body);
+      case NITRO_MATERIAL_NAME:
+        handleNitroCollide(body);
         break;
       case PUDDLE_MATERIAL_NAME:
         handlePuddleCollide(body);
@@ -87,7 +87,7 @@ export default function createPlayer({ type, position, onCollide = identity }) {
   player.userData = {
     type,
     speed: INITIAL_SPEED,
-    coinsToRemove: [],
+    nitrosToRemove: [],
     puddlesToExplode: [],
     rotation: 0,
   };

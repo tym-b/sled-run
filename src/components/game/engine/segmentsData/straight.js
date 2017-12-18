@@ -15,8 +15,8 @@ export const objectsData = [
   { type: 'tree', position: { x: 20, y: 5 }, rotation: 0 },
   { type: 'tree', position: { x: -15, y: 80 }, rotation: 0 },
   { type: 'tree', position: { x: 3, y: 150 }, rotation: 0 },
-  { type: 'coin', position: { x: 0, z: 7, y: 35 }, rotation: 0 },
-  { type: 'coin', position: { x: 4, z: 2, y: 80 }, rotation: 0 },
+  { type: 'nitro', position: { x: 0, z: 7, y: 35 }, rotation: 0 },
+  { type: 'nitro', position: { x: 4, z: 2, y: 80 }, rotation: 0 },
   { type: 'puddle', position: { x: 10, z: 0, y: 120 }, rotation: 0 },
   { type: 'ramp', position: { x: 0, y: 20 }, rotation: 0 },
 ];

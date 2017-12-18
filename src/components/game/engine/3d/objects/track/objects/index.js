@@ -1,7 +1,7 @@
 import rock from './rock';
 import smallRock from './smallRock';
 import tree from './tree';
-import coin from './coin';
+import nitro from './nitro';
 import puddle from './puddle';
 import groundStraight from './groundStraight';
 import groundLeft from './groundLeft';
@@ -17,7 +17,7 @@ export default {
   rock,
   smallRock,
   tree,
-  coin,
+  nitro,
   puddle,
   ramp,
   stone,

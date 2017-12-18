@@ -50,14 +50,14 @@ export default class Physics {
   };
 
   clearWorld = () => {
-    const coinsToRemove = uniq(flatten(this.players.map(player => player.userData.coinsToRemove)));
+    const nitrosToRemove = uniq(flatten(this.players.map(player => player.userData.nitrosToRemove)));
     const puddlesToExplode = uniq(flatten(this.players.map(player => player.userData.puddlesToExplode)));
 
-    coinsToRemove.forEach(body => this.world.remove(body));
+    nitrosToRemove.forEach(body => this.world.remove(body));
     puddlesToExplode.forEach(body => this.onPuddleCollideHandler(body));
 
     this.players.forEach((player) => {
-      player.userData.coinsToRemove = [];
+      player.userData.nitrosToRemove = [];
       player.userData.puddlesToExplode = [];
     });
   };

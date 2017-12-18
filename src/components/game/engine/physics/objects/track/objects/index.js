@@ -2,7 +2,7 @@ import rock from './rock';
 import oblongRock from './oblongRock';
 import smallRock from './smallRock';
 import tree from './tree';
-import coin from './coin';
+import nitro from './nitro';
 import puddle from './puddle';
 import ramp from './ramp';
 import stone from './stone';
@@ -13,7 +13,7 @@ export default {
   oblongRock,
   smallRock,
   tree,
-  coin,
+  nitro,
   puddle,
   ramp,
   stone,
