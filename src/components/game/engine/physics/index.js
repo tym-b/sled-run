@@ -3,7 +3,7 @@ import { identity } from 'ramda';
 import { flatten, uniq, remove } from 'lodash';
 
 import createGround from './objects/ground';
-import createPlayer from './objects/player';
+import createPlayer, { INITIAL_SPEED } from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
 
@@ -18,8 +18,18 @@ export default class Physics {
     this.world = createWorld();
 
     this.players = [
-      createPlayer({ type: GREEN_PLAYER, position: { x: -10 }, onCollide: this.handlePlayerCollide }, this.audio),
-      createPlayer({ type: RED_PLAYER, position: { x: 10 }, onCollide: this.handlePlayerCollide }, this.audio),
+      createPlayer({
+        type: GREEN_PLAYER,
+        position: { x: -10 },
+        onCollide: this.handlePlayerCollide,
+        onFinish: this.handlePlayerFinish,
+      }, this.audio),
+      createPlayer({
+        type: RED_PLAYER,
+        position: { x: 10 },
+        onCollide: this.handlePlayerCollide,
+        onFinish: this.handlePlayerFinish,
+      }, this.audio),
     ];
 
     this.players.forEach(player => this.world.addBody(player));
@@ -39,15 +49,30 @@ export default class Physics {
   }
 
   onPuddleCollideHandler = identity;
+  onFinishHandler = identity;
 
   set onPuddleCollide(fn) {
     this.onPuddleCollideHandler = fn;
+  }
+
+  set onFinish(fn) {
+    this.onFinishHandler = fn;
   }
 
   handlePlayerCollide = (type) => {
     if (this.sensorData && type) {
       this.sensorData.sendPlayerCollideEvent(type);
     }
+  };
+
+  handlePlayerFinish = (body) => {
+    this.onFinishHandler(body.userData.type);
+  };
+
+  start = () => {
+    this.players.forEach((player) => {
+      player.userData.speed = INITIAL_SPEED;
+    });
   };
 
   clearWorld = () => {

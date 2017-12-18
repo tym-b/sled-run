@@ -12,6 +12,7 @@ const ease = Cubic.easeInOut;
 export default class WaitingForPlayer extends PureComponent {
   static propTypes = {
     isVisible: PropTypes.bool.isRequired,
+    gameLoaded: PropTypes.bool.isRequired,
   }
 
   static defaultProps = {
@@ -95,7 +96,9 @@ export default class WaitingForPlayer extends PureComponent {
         </div>
       </div>
 
-      <span ref={this.handleCopyRef} className={classes.info}>waiting for two players to connect...</span>
+      <span ref={this.handleCopyRef} className={classes.info}>
+        {this.props.gameLoaded ? 'waiting for two players to connect...' : 'loading assets...'}
+      </span>
     </div>
   );
 }

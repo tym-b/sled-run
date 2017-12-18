@@ -18,7 +18,7 @@ export const REDUCED_SPEED_INTERVAL = 500;
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 
-export default function createPlayer({ type, position, onCollide = identity }, audio) {
+export default function createPlayer({ type, position, onCollide = identity, onFinish = identity }, audio) {
   let speedModifierTimeoutId = null;
 
   let puddleCollisionFilter = false;
@@ -84,6 +84,7 @@ export default function createPlayer({ type, position, onCollide = identity }, a
         break;
       case META_MATERIAL_NAME:
         handleMetaCollide(body);
+        onFinish(body);
         break;
       case RAMP_MATERIAL_NAME:
         audio.sounds.jump.play();
@@ -102,7 +103,7 @@ export default function createPlayer({ type, position, onCollide = identity }, a
 
   player.userData = {
     type,
-    speed: INITIAL_SPEED,
+    speed: 0,
     nitrosToRemove: [],
     puddlesToExplode: [],
     rotation: 0,

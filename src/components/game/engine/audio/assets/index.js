@@ -4,6 +4,7 @@ import nitro from './nitro.mp3';
 import start from './start.mp3';
 import crash from './crash.mp3';
 import puddle from './puddle.mp3';
+import counting from './counting.mp3';
 
 export default {
   background,
@@ -12,4 +13,5 @@ export default {
   start,
   crash,
   puddle,
+  counting,
 };

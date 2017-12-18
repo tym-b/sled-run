@@ -14,10 +14,9 @@ import createPuddleExplosion, { explode } from './objects/track/objects/puddleEx
 import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
-window.THREE = THREE;
-window.CANNON = CANNON;
-
-require('cannon/tools/threejs/CannonDebugRenderer');
+// window.THREE = THREE;
+// window.CANNON = CANNON;
+// require('cannon/tools/threejs/CannonDebugRenderer');
 
 
 export default class Engine3D {
@@ -36,7 +35,7 @@ export default class Engine3D {
 
     this.scene.add(this.light);
 
-    this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
+    // this.cannonDebugRenderer = new THREE.CannonDebugRenderer(this.scene, this.physics.world);
 
     renderTarget.appendChild(this.renderer.domElement);
   }
@@ -118,7 +117,6 @@ export default class Engine3D {
     });
 
     // this.renderer.render(this.scene, this.debugCamera);
-
-    this.cannonDebugRenderer.update();
+    // this.cannonDebugRenderer.update();
   };
 }
