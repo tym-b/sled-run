@@ -5,6 +5,9 @@ import { identity } from 'ramda';
 import { NITRO_MATERIAL_NAME } from './track/objects/nitro';
 import { PUDDLE_MATERIAL_NAME } from './track/objects/puddle';
 import { META_MATERIAL_NAME } from './track/objects/meta';
+import { RAMP_MATERIAL_NAME } from './track/objects/ramp';
+import { STONE_MATERIAL_NAME } from './track/objects/stone';
+import { RED_PLAYER } from '../../../../../../server/helpers';
 
 export const INITIAL_SPEED = 500;
 export const BOOSTED_SPEED = 900;
@@ -15,7 +18,7 @@ export const REDUCED_SPEED_INTERVAL = 500;
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 
-export default function createPlayer({ type, position, onCollide = identity }) {
+export default function createPlayer({ type, position, onCollide = identity }, audio) {
   let speedModifierTimeoutId = null;
 
   let puddleCollisionFilter = false;
@@ -73,12 +76,25 @@ export default function createPlayer({ type, position, onCollide = identity }) {
     switch (body.material.name) {
       case NITRO_MATERIAL_NAME:
         handleNitroCollide(body);
+        audio.sounds.nitro.play();
         break;
       case PUDDLE_MATERIAL_NAME:
         handlePuddleCollide(body);
+        audio.sounds.puddle.play();
         break;
       case META_MATERIAL_NAME:
         handleMetaCollide(body);
+        break;
+      case RAMP_MATERIAL_NAME:
+        audio.sounds.jump.play();
+        break;
+      case STONE_MATERIAL_NAME:
+        audio.sounds.crash.play();
+        break;
+      case PLAYER_MATERIAL_NAME:
+        if (type === RED_PLAYER) {
+          audio.sounds.crash.play();
+        }
         break;
       default:
     }

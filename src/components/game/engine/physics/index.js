@@ -11,14 +11,15 @@ import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
 export default class Physics {
-  constructor(trackData, sensorData) {
+  constructor(trackData, sensorData, audio) {
     this.sensorData = sensorData;
     this.trackData = trackData;
+    this.audio = audio;
     this.world = createWorld();
 
     this.players = [
-      createPlayer({ type: GREEN_PLAYER, position: { x: -10 }, onCollide: this.handlePlayerCollide }),
-      createPlayer({ type: RED_PLAYER, position: { x: 10 }, onCollide: this.handlePlayerCollide }),
+      createPlayer({ type: GREEN_PLAYER, position: { x: -10 }, onCollide: this.handlePlayerCollide }, this.audio),
+      createPlayer({ type: RED_PLAYER, position: { x: 10 }, onCollide: this.handlePlayerCollide }, this.audio),
     ];
 
     this.players.forEach(player => this.world.addBody(player));

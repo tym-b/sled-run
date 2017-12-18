@@ -6,8 +6,8 @@ export const material = new CANNON.Material(PUDDLE_MATERIAL_NAME);
 export default function createPuddle({ position, id }) {
   const puddle = new CANNON.Body({
     mass: 0,
-    position: new CANNON.Vec3(position.x, -4, -position.y),
-    shape: new CANNON.Sphere(10),
+    position: new CANNON.Vec3(position.x, -3, -position.y),
+    shape: new CANNON.Sphere(7),
     material,
   });
 
