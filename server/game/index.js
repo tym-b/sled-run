@@ -7,8 +7,6 @@ export default class Game {
     this.socket.on('connection', this.handleClientConnection);
   }
 
-  gameStarted = false;
-  gameIsReady = false;
   clients = {
     [GAME]: null,
     [GREEN_PLAYER]: null,
@@ -24,8 +22,6 @@ export default class Game {
     socket.on('playerConnected', this.handlePlayerConnection(socket));
     socket.on('deviceMove', this.handleDeviceMove(id));
     socket.on('playerCollided', this.handlePlayerCollided);
-    socket.on('startGame', this.handleStartGame);
-    socket.on('finishGame', this.handleFinishGame);
   }
 
   handleClientDisconnection = (id) => () => {
@@ -74,15 +70,5 @@ export default class Game {
 
   handlePlayerCollided = ({ type }) => {
     this.socket.to(type).emit('detectedCollision');
-  }
-
-  handleStartGame = () => {
-    console.log('Game started!!!');
-    this.gameStarted = true;
-  }
-
-  handleFinishGame = () => {
-    console.log('Game finished.');
-    this.gameStarted = false;
   }
 }

@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import socketio from 'socket.io-client';
-import { propEq, ifElse, always } from 'ramda';
+import { either, propEq } from 'ramda';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../server/helpers';
-import SplitScreenOverlay from '../splitScreenOverlay/splitScreenOverlay.component';
-import WaitingForPlayer from '../waitingForPlayer/waitingForPlayer.component';
+import WaitingForPlayers from '../waitingForPlayers/waitingForPlayers.component';
+import Start from '../start/start.component';
+import Finish from '../finish/finish.component';
 
 import Engine from './engine';
 import SensorData from './sensorData';
@@ -50,20 +51,16 @@ export default class Game extends PureComponent {
 
   handleContainerRef = (ref) => (this.renderTarget = ref);
 
-  renderSide = (player) => ifElse(
-    propEq(`${player}Connected`, false),
-    () => <WaitingForPlayer player={player} />,
-    always(null),
+  isWaitingForPlayers = () => either(
+    propEq(`${GREEN_PLAYER}Connected`, false),
+    propEq(`${RED_PLAYER}Connected`, false)
   )(this.state);
 
   render = () => (
     <div>
-      {/*<StartOverlay />*/}
-      {/*<FinishedOverlay />*/}
-      <SplitScreenOverlay
-        leftSide={this.renderSide(GREEN_PLAYER)}
-        rightSide={this.renderSide(RED_PLAYER)}
-      />
+      <WaitingForPlayers isVisible={this.isWaitingForPlayers()} />
+      {/*<Start isVisible onCounterFinish={} />*/}
+      {/*<Finish isVisible onRestartClick={} player="green" />*/}
       <div ref={this.handleContainerRef} />
     </div>
   );
