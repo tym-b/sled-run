@@ -4,15 +4,23 @@ import createSanta from './objects/santa';
 import createSled from './objects/sled';
 import createFire, { animateFire } from './objects/fire';
 
+import { GREEN_PLAYER } from '../../../../../../../server/helpers';
+
+
 let time = 0;
 
 export function update(t) {
   time = t;
 }
 
-export default async function createPlayer() {
-  const [santa, sled, fire, leftFire, rightFire] =
-    await Promise.all([createSanta(), createSled(), createFire(), createFire(), createFire()]);
+export default async function createPlayer(type) {
+  const [santa, sled, fire, leftFire, rightFire] = await Promise.all([
+    createSanta(type === GREEN_PLAYER),
+    createSled(type === GREEN_PLAYER),
+    createFire(),
+    createFire(),
+    createFire()
+  ]);
   const player = new THREE.Group();
 
   leftFire.position.set(-1, 0.25, 0);

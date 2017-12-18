@@ -10,7 +10,7 @@ import createSnow from './objects/snow';
 import createPlayer, { update } from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
-import createSnowdriftExplosion, { explode } from './objects/track/objects/snowdriftExplosion';
+import createPuddleExplosion, { explode } from './objects/track/objects/puddleExplosion';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
 
@@ -30,7 +30,7 @@ export default class Engine3D {
   constructor(renderTarget, physics, trackData) {
     this.physics = physics;
     this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
-    this.physics.onSnowdriftCollide = this.handleSnowdriftCollide;
+    this.physics.onPuddleCollide = this.handlePuddleCollide;
 
     this.trackData = trackData;
 
@@ -44,7 +44,7 @@ export default class Engine3D {
   async load() {
     this.players = [await createPlayer(GREEN_PLAYER), await createPlayer(RED_PLAYER)];
     this.track = await createTrack(this.trackData);
-    this.snowdriftExplosion = await createSnowdriftExplosion();
+    this.puddleExplosion = await createPuddleExplosion();
     this.sky = await createSky();
     this.snow = await createSnow();
 
@@ -63,18 +63,18 @@ export default class Engine3D {
     objectToRemove.parent.remove(objectToRemove);
   };
 
-  handleSnowdriftCollide = async (body) => {
-    const snowdrift = this.scene.getObjectByName(body.userData.name);
-    const snowdriftWorldPosition = snowdrift.parent.localToWorld(snowdrift.position.clone());
-    const snowdriftExplosion = this.snowdriftExplosion.clone();
+  handlePuddleCollide = async (body) => {
+    const puddle = this.scene.getObjectByName(body.userData.name);
+    const puddleWorldPosition = puddle.parent.localToWorld(puddle.position.clone());
+    const puddleExplosion = this.puddleExplosion.clone();
 
-    snowdriftExplosion.position.copy(snowdriftWorldPosition);
+    puddleExplosion.position.copy(puddleWorldPosition);
 
-    this.scene.add(snowdriftExplosion);
+    this.scene.add(puddleExplosion);
 
-    await explode(snowdriftExplosion);
+    await explode(puddleExplosion);
 
-    this.scene.remove(snowdriftExplosion);
+    this.scene.remove(puddleExplosion);
   };
 
   updateViewport = () => {

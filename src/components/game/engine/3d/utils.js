@@ -20,7 +20,7 @@ export const createGround = async (objectJson) => {
   const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
   const mesh = new THREE.Mesh(geometry, material);
 
-  mesh.receiveShadow = true;
+  mesh.renderOrder = -1;
 
   return mesh;
 };

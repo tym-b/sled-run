@@ -37,10 +37,10 @@ export default class Physics {
     });
   }
 
-  onSnowdriftCollideHandler = identity;
+  onPuddleCollideHandler = identity;
 
-  set onSnowdriftCollide(fn) {
-    this.onSnowdriftCollideHandler = fn;
+  set onPuddleCollide(fn) {
+    this.onPuddleCollideHandler = fn;
   }
 
   handlePlayerCollide = (type) => {
@@ -51,14 +51,14 @@ export default class Physics {
 
   clearWorld = () => {
     const coinsToRemove = uniq(flatten(this.players.map(player => player.userData.coinsToRemove)));
-    const snowdriftsToExplode = uniq(flatten(this.players.map(player => player.userData.snowdriftsToExplode)));
+    const puddlesToExplode = uniq(flatten(this.players.map(player => player.userData.puddlesToExplode)));
 
     coinsToRemove.forEach(body => this.world.remove(body));
-    snowdriftsToExplode.forEach(body => this.onSnowdriftCollideHandler(body));
+    puddlesToExplode.forEach(body => this.onPuddleCollideHandler(body));
 
     this.players.forEach((player) => {
       player.userData.coinsToRemove = [];
-      player.userData.snowdriftsToExplode = [];
+      player.userData.puddlesToExplode = [];
     });
   };
 

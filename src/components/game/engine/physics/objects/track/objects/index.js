@@ -3,10 +3,9 @@ import oblongRock from './oblongRock';
 import smallRock from './smallRock';
 import tree from './tree';
 import coin from './coin';
-import snowdrift from './snowdrift';
+import puddle from './puddle';
 import ramp from './ramp';
 import stone from './stone';
-import stones from './stones';
 import meta from './meta';
 
 export default {
@@ -15,9 +14,8 @@ export default {
   smallRock,
   tree,
   coin,
-  snowdrift,
+  puddle,
   ramp,
   stone,
-  stones,
   meta,
 };

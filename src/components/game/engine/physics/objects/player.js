@@ -3,7 +3,7 @@ import TWEEN from 'tween.js';
 import { identity } from 'ramda';
 
 import { COIN_MATERIAL_NAME } from './track/objects/coin';
-import { SNOWDRIFT_MATERIAL_NAME } from './track/objects/snowdrift';
+import { PUDDLE_MATERIAL_NAME } from './track/objects/puddle';
 import { META_MATERIAL_NAME } from './track/objects/meta';
 
 export const INITIAL_SPEED = 500;
@@ -18,8 +18,8 @@ export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 export default function createPlayer({ type, position, onCollide = identity }) {
   let speedModifierTimeoutId = null;
 
-  let snowdriftCollisionFilter = false;
-  let snowdriftCollisionFilterTimeout = null;
+  let puddleCollisionFilter = false;
+  let puddleCollisionFilterTimeout = null;
 
   const player = new CANNON.Body({
     mass: 2,
@@ -49,13 +49,13 @@ export default function createPlayer({ type, position, onCollide = identity }) {
     modifySpeed(BOOSTED_SPEED, BOOSTED_SPEED_INTERVAL);
   };
 
-  const handleSnowdriftCollide = (body) => {
-    if (!snowdriftCollisionFilter) {
-      clearTimeout(snowdriftCollisionFilterTimeout);
-      snowdriftCollisionFilter = true;
-      snowdriftCollisionFilterTimeout = setTimeout(() => (snowdriftCollisionFilter = false), 1000);
+  const handlePuddleCollide = (body) => {
+    if (!puddleCollisionFilter) {
+      clearTimeout(puddleCollisionFilterTimeout);
+      puddleCollisionFilter = true;
+      puddleCollisionFilterTimeout = setTimeout(() => (puddleCollisionFilter = false), 1000);
 
-      player.userData.snowdriftsToExplode.push(body);
+      player.userData.puddlesToExplode.push(body);
       modifySpeed(REDUCED_SPEED, REDUCED_SPEED_INTERVAL);
     }
   };
@@ -74,8 +74,8 @@ export default function createPlayer({ type, position, onCollide = identity }) {
       case COIN_MATERIAL_NAME:
         handleCoinCollide(body);
         break;
-      case SNOWDRIFT_MATERIAL_NAME:
-        handleSnowdriftCollide(body);
+      case PUDDLE_MATERIAL_NAME:
+        handlePuddleCollide(body);
         break;
       case META_MATERIAL_NAME:
         handleMetaCollide(body);
@@ -88,7 +88,7 @@ export default function createPlayer({ type, position, onCollide = identity }) {
     type,
     speed: INITIAL_SPEED,
     coinsToRemove: [],
-    snowdriftsToExplode: [],
+    puddlesToExplode: [],
     rotation: 0,
   };
 

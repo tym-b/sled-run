@@ -2,17 +2,16 @@ import * as THREE from 'three';
 import TWEEN from 'tween.js';
 import { times } from 'lodash';
 
-import particleTexture from './snow-particle.png';
+import particleTexture from './drop.png';
 import { loadTexture } from '../../../../utils';
 
 
-export default async function createSnowdriftExplosion() {
+export default async function createPuddleExplosion() {
   const texture = await loadTexture(particleTexture);
   const geometry = new THREE.Geometry();
   const material = new THREE.PointsMaterial({
     map: texture,
-    size: 0.8,
-    blending: THREE.AdditiveBlending,
+    size: 0.7,
     transparent: true,
   });
 
@@ -20,14 +19,14 @@ export default async function createSnowdriftExplosion() {
     geometry.vertices.push(new THREE.Vector3(
       THREE.Math.randFloatSpread(40),
       THREE.Math.randFloatSpread(15),
-      THREE.Math.randFloatSpread(25),
+      THREE.Math.randFloatSpread(40),
     ));
   });
 
   return new THREE.Points(geometry, material);
 }
 
-export function explode(snowdriftExplosion) {
+export function explode(mesh) {
   return new Promise((resolve) => {
     const explosionParams = { scale: 0.00001, offset: 0 };
 
@@ -43,13 +42,13 @@ export function explode(snowdriftExplosion) {
       .onComplete(resolve)
       .start();
 
-    snowdriftExplosion.onBeforeRender = () => {
+    mesh.onBeforeRender = () => {
       const { scale, offset } = explosionParams;
 
-      snowdriftExplosion.scale.setScalar(scale);
-      snowdriftExplosion.position.setY(-offset);
+      mesh.scale.setScalar(scale);
+      mesh.position.setY(-offset);
     };
 
-    snowdriftExplosion.onBeforeRender();
+    mesh.onBeforeRender();
   });
 }
