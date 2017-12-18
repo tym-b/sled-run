@@ -12,6 +12,7 @@ const DISCONNECTED = 'disconnected';
 export default class Sensor extends PureComponent {
   state = {
     position: 0,
+    offset: 0,
     status: CONNECTING,
     error: '',
   };
@@ -53,10 +54,12 @@ export default class Sensor extends PureComponent {
 
   emitPosition = throttle((position) => {
     this.setState({ position });
-    this.socket.emit('deviceMove', { position });
+    this.socket.emit('deviceMove', { position: position - this.state.offset });
   }, 30);
 
   handleOrientation = pipe(prop('beta'), Math.round, this.handlePositionChange);
+
+  handleCalibrate = () => this.setState(state => ({ offset: state.position }));
 
   renderValue = () => ifElse(
     equals(true),
@@ -68,9 +71,10 @@ export default class Sensor extends PureComponent {
     return (
       <div style={{ background: this.player }}>
         {this.renderValue()}
-
+        <h2>Offset: {this.state.offset}</h2>
         <h2>Status: {this.state.status}</h2>
         <h2>Error: {this.state.error}</h2>
+        <button style={{ padding: '100px', margin: '30px auto' }} onClick={this.handleCalibrate}>CALIBRATE</button>
       </div>
     );
   }
