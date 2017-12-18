@@ -39,7 +39,7 @@ export default class Physics {
 
     this.dynamicObjects = [];
 
-    createTrack(trackData).forEach((object) => {
+    createTrack(this.trackData).forEach((object) => {
       this.world.addBody(object);
 
       if (object.type !== CANNON.Body.STATIC) {

@@ -88,7 +88,6 @@ export default class Game extends PureComponent {
     <div>
       <WaitingForPlayers isVisible={this.isWaitingForPlayers()} gameLoaded={this.state.gameLoaded} />
       <Start
-        ref=""
         isVisible={this.canStartGame()}
         onStartClick={() => this.engine.playCounter()}
         onCounterFinish={this.start}

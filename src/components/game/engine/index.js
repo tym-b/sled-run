@@ -14,15 +14,36 @@ import createTrack, {
 
 const TRACK = [
   TRACK_SEGMENT_START,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_LEFT,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_RIGHT,
-  // TRACK_SEGMENT_STRAIGHT,
-  // TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_LEFT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_LEFT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_LEFT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_RIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
+  TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_END,
 ];
 
@@ -30,17 +51,26 @@ export default class Engine {
   constructor(renderTarget, sensorData, onFinish) {
     this.track = createTrack(TRACK);
 
-    this.onFinish = onFinish;
-
     this.audio = new Audio();
     this.audio.load();
 
     this.sensorData = sensorData;
     this.renderTarget = renderTarget;
+
+    this.onFinish = onFinish;
+    this.setupPhysics();
+
+    this.engine3d = new Engine3D(this.renderTarget, this.physics, this.track);
   }
 
-  load() {
-    return this.reset();
+  setupPhysics() {
+    this.physics = new Physics(this.track, this.sensorData, this.audio);
+    this.physics.onFinish = this.onFinish;
+  }
+
+  async load() {
+    await this.engine3d.load();
+    this.init();
   }
 
   start() {
@@ -52,14 +82,12 @@ export default class Engine {
     this.audio.sounds.counting.play();
   }
 
-  reset() {
-    return new Promise((resolve) => {
-      cancelAnimationFrame(this.rafNr);
-      this.physics = new Physics(this.track, this.sensorData, this.audio);
-      this.physics.onFinish = this.onFinish;
-      this.engine3d = new Engine3D(this.renderTarget, this.physics, this.track);
-      this.engine3d.load().then(this.init).then(resolve);
-    });
+  async reset() {
+    cancelAnimationFrame(this.rafNr);
+    this.setupPhysics();
+    await this.engine3d.reset();
+    this.engine3d.setPhysics(this.physics);
+    this.init();
   }
 
   updateViewport = () => {

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as CANNON from 'cannon';
+// import * as CANNON from 'cannon';
 
 import createScene from './scene';
 import createCameras, { updateCameras } from './cameras';
@@ -27,11 +27,9 @@ export default class Engine3D {
   playerLights = createPlayerLights();
 
   constructor(renderTarget, physics, trackData) {
-    this.physics = physics;
-    this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
-    this.physics.onPuddleCollide = this.handlePuddleCollide;
-
     this.trackData = trackData;
+
+    this.setPhysics(physics);
 
     this.scene.add(this.light);
 
@@ -39,6 +37,12 @@ export default class Engine3D {
 
     renderTarget.appendChild(this.renderer.domElement);
   }
+
+  setPhysics = (physics) => {
+    this.physics = physics;
+    this.physics.world.addEventListener('removeBody', this.handleRemoveObject);
+    this.physics.onPuddleCollide = this.handlePuddleCollide;
+  };
 
   async load() {
     this.players = [await createPlayer(GREEN_PLAYER), await createPlayer(RED_PLAYER)];
@@ -57,23 +61,35 @@ export default class Engine3D {
     this.scene.add(this.track, this.sky, ...this.players);
   }
 
+  async reset() {
+    this.scene.remove(this.track);
+    this.track = await createTrack(this.trackData);
+    this.scene.add(this.track);
+  }
+
   handleRemoveObject = ({ body }) => {
     const objectToRemove = this.scene.getObjectByName(body.userData.name);
-    objectToRemove.parent.remove(objectToRemove);
+
+    if (objectToRemove) {
+      objectToRemove.parent.remove(objectToRemove);
+    }
   };
 
   handlePuddleCollide = async (body) => {
     const puddle = this.scene.getObjectByName(body.userData.name);
-    const puddleWorldPosition = puddle.parent.localToWorld(puddle.position.clone());
-    const puddleExplosion = this.puddleExplosion.clone();
 
-    puddleExplosion.position.copy(puddleWorldPosition);
+    if (puddle) {
+      const puddleWorldPosition = puddle.parent.localToWorld(puddle.position.clone());
+      const puddleExplosion = this.puddleExplosion.clone();
 
-    this.scene.add(puddleExplosion);
+      puddleExplosion.position.copy(puddleWorldPosition);
 
-    await explode(puddleExplosion);
+      this.scene.add(puddleExplosion);
 
-    this.scene.remove(puddleExplosion);
+      await explode(puddleExplosion);
+
+      this.scene.remove(puddleExplosion);
+    }
   };
 
   updateViewport = () => {
@@ -92,11 +108,13 @@ export default class Engine3D {
     this.physics.dynamicObjects.forEach(object => {
       const sceneObject = this.scene.getObjectByName(object.userData.name);
 
-      sceneObject.position.copy(object.position);
-      sceneObject.quaternion.copy(object.quaternion);
+      if (sceneObject) {
+        sceneObject.position.copy(object.position);
+        sceneObject.quaternion.copy(object.quaternion);
 
-      sceneObject.parent.updateMatrixWorld();
-      sceneObject.applyMatrix(new THREE.Matrix4().getInverse(sceneObject.parent.matrixWorld));
+        sceneObject.parent.updateMatrixWorld();
+        sceneObject.applyMatrix(new THREE.Matrix4().getInverse(sceneObject.parent.matrixWorld));
+      }
     });
   };
 

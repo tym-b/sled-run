@@ -34,13 +34,11 @@ export const objects = [
   ],
   [
     { type: 'tree', position: { x: 20, y: 110 }, rotation: -65 },
-    { type: 'tree', position: { x: 25, y: 115 }, rotation: -65 },
     { type: 'stone', position: { x: 45, y: 75 }, rotation: 0 },
     { type: 'puddle', position: { x: 45, y: 140 }, rotation: 0 },
     { type: 'puddle', position: { x: 85, y: 170 }, rotation: 0 },
     { type: 'stone', position: { x: 55, y: 110 }, rotation: 0 },
     { type: 'tree', position: { x: 85, y: 140 }, rotation: -85 },
-    { type: 'tree', position: { x: 88, y: 135 }, rotation: -85 },
     { type: 'tree', position: { x: 73, y: 145 }, rotation: -85 },
     { type: 'stone', position: { x: 10, y: 30 }, rotation: 0 },
   ],

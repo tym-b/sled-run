@@ -9,10 +9,10 @@ import { RAMP_MATERIAL_NAME } from './track/objects/ramp';
 import { STONE_MATERIAL_NAME } from './track/objects/stone';
 import { RED_PLAYER } from '../../../../../../server/helpers';
 
-export const INITIAL_SPEED = 500;
-export const BOOSTED_SPEED = 900;
+export const INITIAL_SPEED = 350;
+export const BOOSTED_SPEED = 700;
 export const BOOSTED_SPEED_INTERVAL = 1500;
-export const REDUCED_SPEED = 200;
+export const REDUCED_SPEED = 100;
 export const REDUCED_SPEED_INTERVAL = 500;
 
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
