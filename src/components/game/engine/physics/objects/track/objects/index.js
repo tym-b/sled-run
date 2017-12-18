@@ -7,6 +7,7 @@ import puddle from './puddle';
 import ramp from './ramp';
 import stone from './stone';
 import meta from './meta';
+import start from './start';
 
 export default {
   rock,
@@ -18,4 +19,5 @@ export default {
   ramp,
   stone,
   meta,
+  start,
 };

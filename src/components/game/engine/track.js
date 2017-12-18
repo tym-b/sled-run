@@ -6,6 +6,7 @@ export const TRACK_SEGMENT_STRAIGHT = 'straight';
 export const TRACK_SEGMENT_LEFT = 'left';
 export const TRACK_SEGMENT_RIGHT = 'right';
 export const TRACK_SEGMENT_END = 'end';
+export const TRACK_SEGMENT_START = 'start';
 
 
 export function turnClockwise({ x, y }, turns) {
@@ -30,11 +31,11 @@ export function turnClockwise({ x, y }, turns) {
 export default function createTrack(trackData) {
   return trackData
     .map((segmentType) => {
-      const segmentData = segmentsData[segmentType];
+      const { default: segmentCreator, nextSegment } = segmentsData[segmentType];
 
       return {
-        ...segmentData,
-        objectsData: segmentData.objectsData.map(object => ({ id: uniqueId(), ...object })),
+        objectsData: segmentCreator().map(object => ({ id: uniqueId(), ...object })),
+        nextSegment,
       };
     })
     .reduce((segments, segment) => {

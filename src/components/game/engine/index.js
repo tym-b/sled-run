@@ -4,6 +4,7 @@ import Physics from './physics';
 import Engine3D from './3d';
 
 import createTrack, {
+  TRACK_SEGMENT_START,
   TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_LEFT,
   TRACK_SEGMENT_RIGHT,
@@ -11,13 +12,10 @@ import createTrack, {
 } from './track';
 
 const TRACK = [
+  TRACK_SEGMENT_START,
   TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_LEFT,
-  // TRACK_SEGMENT_RIGHT,
-  // TRACK_SEGMENT_END,
+  TRACK_SEGMENT_END,
 ];
 
 export default class Engine {
