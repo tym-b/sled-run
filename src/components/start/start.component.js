@@ -15,11 +15,13 @@ export default class Start extends PureComponent {
   static propTypes = {
     isVisible: PropTypes.bool.isRequired,
     onCounterFinish: PropTypes.func.isRequired,
+    onStartClick: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     isVisible: false,
     onCounterFinish: identity,
+    onStartClick: identity,
   }
 
   state = {
@@ -36,8 +38,13 @@ export default class Start extends PureComponent {
   }
 
   componentDidUpdate({ isVisible }) {
-    if (this.props.isVisible && this.props.isVisible !== isVisible) {
-      this.animateIn();
+    if (this.props.isVisible !== isVisible) {
+      if (this.props.isVisible) {
+        this.animateIn();
+        return;
+      }
+
+      this.animateOut();
     }
   }
 
@@ -62,16 +69,18 @@ export default class Start extends PureComponent {
     TweenMax.to(
       this.ellipseRef,
       0.3,
-      { autoAlpha: 0, scale: 0, delay: 0.3  },
+      { autoAlpha: 0, scale: 0, delay: 0.3 },
     );
   }
 
   handleClick = () => {
+    this.props.onStartClick();
+
     new TimelineMax()
-      .addLabel('start;')
+      .addLabel('start')
       .fromTo(this.buttonRef, 0.3, { autoAlpha: 1 }, { autoAlpha: 0 })
       .fromTo(this.counterRef, 0.3, { autoAlpha: 0 }, { autoAlpha: 1, delay: 0.3 })
-      .addCallback(() => this.decreaseCounter(this.state.counterValue), 'start+=1');
+      .addCallback(() => this.decreaseCounter(this.state.counterValue));
   };
 
   decreaseCounter = (counterValue) => {
@@ -82,8 +91,8 @@ export default class Start extends PureComponent {
     if (counterValue > 1) {
       timeline
         .addCallback(() => this.setState({ counterValue: counterValue - 1 }))
-        .to(this.counterRef, 0.5, { autoAlpha: 1, delay: 0.5 }, 'start')
-        .addCallback(() => this.decreaseCounter(counterValue - 1), 'start+=1.5');
+        .to(this.counterRef, 0.5, { autoAlpha: 1, delay: 0.3 }, 'start')
+        .addCallback(() => this.decreaseCounter(counterValue - 1), 'start+=0.8');
       return;
     }
 

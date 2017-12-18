@@ -14,15 +14,15 @@ import createTrack, {
 
 const TRACK = [
   TRACK_SEGMENT_START,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_LEFT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_RIGHT,
-  TRACK_SEGMENT_STRAIGHT,
-  TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_LEFT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_RIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
+  // TRACK_SEGMENT_STRAIGHT,
   TRACK_SEGMENT_END,
 ];
 
@@ -44,14 +44,12 @@ export default class Engine {
   }
 
   start() {
-    clearTimeout(this.startTimeout);
+    this.physics.start();
+    this.audio.sounds.background.play();
+  }
 
+  playCounter() {
     this.audio.sounds.counting.play();
-
-    this.startTimeout = setTimeout(() => {
-      this.physics.start();
-      this.audio.sounds.background.play();
-    }, 4000);
   }
 
   reset() {

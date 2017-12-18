@@ -20,14 +20,14 @@ const isGreenPlayer = propEq('player', GREEN_PLAYER);
 export default class Start extends PureComponent {
   static propTypes = {
     isVisible: PropTypes.bool.isRequired,
-    player: PropTypes.string.isRequired,
-    onResetClick: PropTypes.func.isRequired,
+    player: PropTypes.string,
+    onRestartClick: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     isVisible: false,
     player: GREEN_PLAYER,
-    onResetClick: identity,
+    onRestartClick: identity,
   }
 
   componentDidMount() {
@@ -114,7 +114,7 @@ export default class Start extends PureComponent {
       </div>
 
 
-      <button onClick={this.props.onResetClick} ref={this.handleButtonRef} className={classes.button}>Restart</button>
+      <button onClick={this.props.onRestartClick} ref={this.handleButtonRef} className={classes.button}>Restart</button>
     </div>
   );
 }

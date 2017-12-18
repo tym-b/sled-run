@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import socketio from 'socket.io-client';
-import { either, propEq } from 'ramda';
+import { either, propEq, anyPass, allPass } from 'ramda';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../server/helpers';
 import WaitingForPlayers from '../waitingForPlayers/waitingForPlayers.component';
 import Start from '../start/start.component';
@@ -11,6 +11,7 @@ import SensorData from './sensorData';
 
 export default class Game extends PureComponent {
   state = {
+    winner: null,
     finished: false,
     gameLoaded: false,
     gameStarted: false,
@@ -26,9 +27,12 @@ export default class Game extends PureComponent {
     this.socket.on('playerDisconnected', this.handlePlayerDisconnected);
     this.socket.on('deviceMoveChanged', this.handleDeviceMoveChanged);
 
-    this.engine = new Engine(this.renderTarget, this.sensorData, () => {
-      this.setState({ finished: true });
+    this.engine = new Engine(this.renderTarget, this.sensorData, (winner) => {
+      if (!this.state.finished) {
+        this.setState({ finished: true, winner });
+      }
     });
+
     window.addEventListener('resize', this.engine.updateViewport);
 
     this.engine.load().then(() => this.setState({ gameLoaded: true }));
@@ -38,8 +42,15 @@ export default class Game extends PureComponent {
     window.removeEventListener('resize', this.engine.updateViewport);
   }
 
-  reset() {
-    this.setState({ gameLoaded: false, finished: false });
+  engine = {};
+
+  start = () => {
+    this.setState({ winner: null });
+    this.engine.start();
+  }
+
+  reset = () => {
+    this.setState({ finished: false, gameLoaded: false });
     this.engine.reset().then(() => this.setState({ gameLoaded: true }));
   }
 
@@ -47,12 +58,7 @@ export default class Game extends PureComponent {
 
   handlePlayerCollided = (type) => this.socket.emit('playerCollided', { type });
   handleConnect = () => this.socket.emit('gameConnected');
-  handlePlayerConnected = ({ type }) => {
-    this.setState({ [`${type}Connected`]: true });
-    if (!this.isWaitingForPlayers()) {
-      this.engine.start();
-    }
-  };
+  handlePlayerConnected = ({ type }) => this.setState({ [`${type}Connected`]: true });
   handlePlayerDisconnected = ({ type }) => this.setState({ [`${type}Connected`]: false });
   handleDeviceMoveChanged = (data) => {
     const { type } = data;
@@ -67,16 +73,27 @@ export default class Game extends PureComponent {
 
   handleContainerRef = (ref) => (this.renderTarget = ref);
 
-  isWaitingForPlayers = () => either(
+  isWaitingForPlayers = () => anyPass([
     propEq(`${GREEN_PLAYER}Connected`, false),
-    propEq(`${RED_PLAYER}Connected`, false)
-  )(this.state);
+    propEq(`${RED_PLAYER}Connected`, false),
+  ])(this.state);
+
+  canStartGame = () => allPass([
+    propEq('gameLoaded', true),
+    propEq('finished', false),
+    () => !this.isWaitingForPlayers(),
+  ])(this.state)
 
   render = () => (
     <div>
       <WaitingForPlayers isVisible={this.isWaitingForPlayers()} gameLoaded={this.state.gameLoaded} />
-      {/*<Start isVisible onCounterFinish={} />*/}
-      {/*<Finish isVisible onRestartClick={} player="green" />*/}
+      <Start
+        ref=""
+        isVisible={this.canStartGame()}
+        onStartClick={() => this.engine.playCounter()}
+        onCounterFinish={this.start}
+      />
+      <Finish isVisible={this.state.finished} onRestartClick={this.reset} player={this.state.winner} />
       <div ref={this.handleContainerRef} />
     </div>
   );

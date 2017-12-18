@@ -65,8 +65,8 @@ export default class Physics {
     }
   };
 
-  handlePlayerFinish = (body) => {
-    this.onFinishHandler(body.userData.type);
+  handlePlayerFinish = (type) => {
+    this.onFinishHandler(type);
   };
 
   start = () => {

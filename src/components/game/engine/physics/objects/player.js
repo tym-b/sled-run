@@ -84,7 +84,7 @@ export default function createPlayer({ type, position, onCollide = identity, onF
         break;
       case META_MATERIAL_NAME:
         handleMetaCollide(body);
-        onFinish(body);
+        onFinish(type);
         break;
       case RAMP_MATERIAL_NAME:
         audio.sounds.jump.play();
