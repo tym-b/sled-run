@@ -1,6 +1,6 @@
 import * as CANNON from 'cannon';
-import { identity, when, both, isNil, complement } from 'ramda';
-import { flatten, uniq } from 'lodash';
+import { identity } from 'ramda';
+import { flatten, uniq, remove } from 'lodash';
 
 import createGround from './objects/ground';
 import createPlayer from './objects/player';
@@ -31,7 +31,7 @@ export default class Physics {
     createTrack(trackData).forEach((object) => {
       this.world.addBody(object);
 
-      if (object.type === CANNON.Body.DYNAMIC) {
+      if (object.type !== CANNON.Body.STATIC) {
         this.dynamicObjects.push(object);
       }
     });
@@ -53,7 +53,10 @@ export default class Physics {
     const nitrosToRemove = uniq(flatten(this.players.map(player => player.userData.nitrosToRemove)));
     const puddlesToExplode = uniq(flatten(this.players.map(player => player.userData.puddlesToExplode)));
 
-    nitrosToRemove.forEach(body => this.world.remove(body));
+    nitrosToRemove.forEach(body => {
+      this.world.remove(body);
+      remove(this.dynamicObjects, o => o === body);
+    });
     puddlesToExplode.forEach(body => this.onPuddleCollideHandler(body));
 
     this.players.forEach((player) => {
