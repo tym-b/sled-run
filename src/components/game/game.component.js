@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import socketio from 'socket.io-client';
-import { either, propEq, anyPass, allPass } from 'ramda';
+import { propEq, anyPass, allPass } from 'ramda';
 import { GREEN_PLAYER, RED_PLAYER } from '../../../server/helpers';
 import WaitingForPlayers from '../waitingForPlayers/waitingForPlayers.component';
 import Start from '../start/start.component';

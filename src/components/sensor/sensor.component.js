@@ -57,7 +57,7 @@ export default class Sensor extends PureComponent {
     this.socket.emit('deviceMove', { position: position - this.state.offset });
   }, 30);
 
-  handleOrientation = pipe(prop('beta'), Math.round, this.handlePositionChange);
+  handleOrientation = pipe(prop('beta'), this.handlePositionChange);
 
   handleCalibrate = () => this.setState(state => ({ offset: state.position }));
 

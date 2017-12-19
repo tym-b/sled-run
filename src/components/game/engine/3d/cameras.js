@@ -11,7 +11,6 @@ export default function createCameras() {
   return CAMERAS.map(({ x, width }) => {
     const camera = new THREE.PerspectiveCamera(60, width * innerWidth / innerHeight, 1, 500);
 
-    camera.position.set(0, 4, 20);
     camera.userData.width = width * innerWidth;
     camera.userData.x = x * innerWidth;
 
@@ -23,6 +22,8 @@ export function updateCameras(cameras) {
   const { innerWidth, innerHeight } = window;
 
   cameras.forEach((camera, index) => {
+    camera.userData.width = CAMERAS[index].width * innerWidth;
+    camera.userData.x = CAMERAS[index].x * innerWidth;
     camera.aspect = CAMERAS[index].width * innerWidth / innerHeight;
     camera.updateProjectionMatrix();
   });

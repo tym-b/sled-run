@@ -14,6 +14,16 @@ export const boundaries = [
   { type: 'smallRock', position: { x: -43.7682, y: 64.2056 }, rotation: 90 },
   { type: 'smallRock', position: { x: -44.4139, y: 166.16 }, rotation: 90 },
   { type: 'smallRock', position: { x: -41.2053, y: 33.0846 }, rotation: 90 },
+  { type: 'pole', position: { x: -27, y: 30 }, rotation: -90 },
+  { type: 'pole', position: { x: 27, y: 30 }, rotation: -90 },
+  { type: 'pole', position: { x: -27, y: 60 }, rotation: -90 },
+  { type: 'pole', position: { x: 27, y: 60 }, rotation: -90 },
+  { type: 'pole', position: { x: -27, y: 90 }, rotation: -90 },
+  { type: 'pole', position: { x: 23, y: 90 }, rotation: -90 },
+  { type: 'pole', position: { x: -27, y: 120 }, rotation: -90 },
+  { type: 'pole', position: { x: 27, y: 120 }, rotation: -90 },
+  { type: 'pole', position: { x: -27, y: 150 }, rotation: -90 },
+  { type: 'pole', position: { x: 27, y: 150 }, rotation: -90 },
 ];
 
 export const objects = [

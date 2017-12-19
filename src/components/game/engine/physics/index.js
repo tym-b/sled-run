@@ -3,9 +3,10 @@ import { identity } from 'ramda';
 import { flatten, uniq, remove } from 'lodash';
 
 import createGround from './objects/ground';
-import createPlayer, { INITIAL_SPEED } from './objects/player';
+import createPlayer from './objects/player';
 import createWorld from './objects/world';
 import createTrack from './objects/track';
+import params from '../params';
 
 import { GREEN_PLAYER, RED_PLAYER } from '../../../../../server/helpers';
 
@@ -71,7 +72,7 @@ export default class Physics {
 
   start = () => {
     this.players.forEach((player) => {
-      player.userData.speed = INITIAL_SPEED;
+      player.userData.speed = params.INITIAL_SPEED;
     });
   };
 
@@ -94,7 +95,8 @@ export default class Physics {
   update() {
     this.players.forEach((player) => {
       player.userData.angle = this.sensorData.getValue(player.userData.type);
-      player.userData.rotation += player.userData.angle * 0.003;
+      player.userData.rotation += Math.abs(player.userData.angle) ** params.SENSOR_POWER *
+        params.SENSOR_MULTIPLIER * Math.sign(player.userData.angle);
       player.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), player.userData.rotation);
       player.applyLocalForce(new CANNON.Vec3(0, 0, -player.userData.speed), new CANNON.Vec3(0, 0, 0));
     });

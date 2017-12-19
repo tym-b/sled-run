@@ -7,7 +7,7 @@ import createRenderer, { updateRenderer } from './renderer';
 import createLight, { createPlayerLights } from './light';
 import createSnow from './objects/snow';
 
-import createPlayer, { update } from './objects/player';
+import createPlayer from './objects/player';
 import createSky from './objects/sky';
 import createTrack from './objects/track';
 import createPuddleExplosion, { explode } from './objects/track/objects/puddleExplosion';
@@ -45,13 +45,14 @@ export default class Engine3D {
   };
 
   async load() {
-    this.players = [await createPlayer(GREEN_PLAYER), await createPlayer(RED_PLAYER)];
+    this.players = [
+      await createPlayer(GREEN_PLAYER, this.cameras[0], this.playerLights[0]),
+      await createPlayer(RED_PLAYER, this.cameras[1], this.playerLights[1]),
+    ];
     this.track = await createTrack(this.trackData);
     this.puddleExplosion = await createPuddleExplosion();
     this.sky = await createSky();
     this.snow = await createSnow();
-
-    this.players.forEach((player, index) => player.add(this.cameras[index], this.playerLights[index]));
 
     // this.debugCamera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 1000);
     // this.debugCamera.position.set(0, 300, -100);
@@ -97,12 +98,13 @@ export default class Engine3D {
     updateCameras(this.cameras);
   };
 
-  syncWorld = () => {
+  syncWorld = (time) => {
     this.players.forEach((player, index) => {
-      player.position.copy(this.physics.players[index].position);
-      player.quaternion.copy(this.physics.players[index].quaternion);
-      player.userData.velocity = this.physics.players[index].velocity;
-      player.userData.angle = this.physics.players[index].userData.angle;
+      const { position, quaternion, velocity, userData: { angle } } = this.physics.players[index];
+
+      player.position.copy(position);
+      player.quaternion.copy(quaternion);
+      player.userData.syncEffects(velocity, angle, time);
     });
 
     this.physics.dynamicObjects.forEach(object => {
@@ -119,8 +121,7 @@ export default class Engine3D {
   };
 
   render = (time) => {
-    update(time);
-    this.syncWorld();
+    this.syncWorld(time);
 
     this.players.forEach((player, index) => {
       const camera = this.cameras[index];

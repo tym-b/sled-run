@@ -10,6 +10,7 @@ import ramp from './ramp';
 import stone from './stone';
 import meta from './meta';
 import start from './start';
+import pole from './pole';
 
 export default {
   groundStraight,
@@ -24,4 +25,5 @@ export default {
   stone,
   meta,
   start,
+  pole,
 };

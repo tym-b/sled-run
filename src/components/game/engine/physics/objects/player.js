@@ -8,12 +8,7 @@ import { META_MATERIAL_NAME } from './track/objects/meta';
 import { RAMP_MATERIAL_NAME } from './track/objects/ramp';
 import { STONE_MATERIAL_NAME } from './track/objects/stone';
 import { RED_PLAYER } from '../../../../../../server/helpers';
-
-export const INITIAL_SPEED = 350;
-export const BOOSTED_SPEED = 700;
-export const BOOSTED_SPEED_INTERVAL = 1500;
-export const REDUCED_SPEED = 100;
-export const REDUCED_SPEED_INTERVAL = 500;
+import params from '../../params';
 
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
@@ -28,7 +23,7 @@ export default function createPlayer({ type, position, onCollide = identity, onF
     mass: 2,
     position: new CANNON.Vec3(position.x, 1, 0),
     fixedRotation: true,
-    linearDamping: 0.95,
+    linearDamping: 0.97,
     material,
   });
 
@@ -42,14 +37,14 @@ export default function createPlayer({ type, position, onCollide = identity, onF
     clearTimeout(speedModifierTimeoutId);
 
     setTimeout(() => {
-      player.userData.speed = INITIAL_SPEED;
+      player.userData.speed = params.INITIAL_SPEED;
       speedModifierTimeoutId = null;
     }, time);
   };
 
   const handleNitroCollide = (body) => {
     player.userData.nitrosToRemove.push(body);
-    modifySpeed(BOOSTED_SPEED, BOOSTED_SPEED_INTERVAL);
+    modifySpeed(params.BOOSTED_SPEED, params.BOOSTED_SPEED_INTERVAL);
   };
 
   const handlePuddleCollide = (body) => {
@@ -59,7 +54,7 @@ export default function createPlayer({ type, position, onCollide = identity, onF
       puddleCollisionFilterTimeout = setTimeout(() => (puddleCollisionFilter = false), 1000);
 
       player.userData.puddlesToExplode.push(body);
-      modifySpeed(REDUCED_SPEED, REDUCED_SPEED_INTERVAL);
+      modifySpeed(params.REDUCED_SPEED, params.REDUCED_SPEED_INTERVAL);
     }
   };
 
