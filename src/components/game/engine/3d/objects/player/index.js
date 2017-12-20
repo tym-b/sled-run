@@ -20,16 +20,10 @@ export default async function createPlayer(type, camera, light) {
   const player = new THREE.Group();
   const vehicle = new THREE.Group();
 
-  santa.castShadow = true;
-  santa.receiveShadow = false;
   sled.castShadow = true;
-  sled.receiveShadow = false;
   fire.castShadow = true;
-  fire.receiveShadow = false;
   leftFire.castShadow = true;
-  leftFire.receiveShadow = false;
   rightFire.castShadow = true;
-  rightFire.receiveShadow = false;
 
   vehicle.add(santa, sled, fire, leftFire, rightFire);
 
@@ -64,6 +58,8 @@ export default async function createPlayer(type, camera, light) {
     camera.position.set(camera.position.x + cameraXDiff * 0.1, 3, 12 * (1 + boost));
     camera.lookAt(new THREE.Vector3(0, 0, 0));
   };
+
+  light.target = vehicle;
 
   player.add(vehicle, camera, light);
 
