@@ -10,16 +10,20 @@ export const loadTexture = memoize(url => new Promise(resolve => textureLoader.l
 
 export const createTexturizedObject = async (objectJson, textureUrl) => {
   const [geometry, texture] = await Promise.all([parseObject(objectJson), loadTexture(textureUrl)]);
-  const material = new THREE.MeshBasicMaterial({ map: texture });
+  const material = new THREE.MeshLambertMaterial({ map: texture });
+  const mesh = new THREE.Mesh(geometry, material);
 
-  return new THREE.Mesh(geometry, material);
+  mesh.receiveShadow = true;
+
+  return mesh;
 };
 
 export const createGround = async (objectJson) => {
   const geometry = await parseObject(objectJson);
-  const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const material = new THREE.MeshLambertMaterial({ color: 0xffffff });
   const mesh = new THREE.Mesh(geometry, material);
 
+  mesh.receiveShadow = true;
   mesh.renderOrder = -1;
 
   return mesh;
