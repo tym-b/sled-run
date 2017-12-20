@@ -65,7 +65,7 @@ export default async function createPlayer(type, camera, light) {
     camera.lookAt(new THREE.Vector3(0, 0, 0));
   };
 
-  player.add(santa, sled, fire, leftFire, rightFire);
+  player.add(vehicle, camera, light);
 
   return player;
 }
