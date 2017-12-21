@@ -51,6 +51,8 @@ export default class Start extends PureComponent {
   }
 
   animateIn = () => {
+    TweenMax.killTweensOf(this.contentRef);
+    TweenMax.killChildTweensOf(this.contentRef);
     TweenMax.fromTo(this.contentRef, 0.3, { autoAlpha: 0 }, { autoAlpha: 1, ease });
     TweenMax.fromTo(this.cupRef, 0.3, { autoAlpha: 0, scale: 0 }, { autoAlpha: 1, scale: 1, delay: 0.3, ease });
     TweenMax.fromTo(this.buttonRef, 0.3, { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, delay: 0.3, ease });
@@ -58,6 +60,8 @@ export default class Start extends PureComponent {
   }
 
   animateOut = () => {
+    TweenMax.killTweensOf(this.contentRef);
+    TweenMax.killChildTweensOf(this.contentRef);
     TweenMax.to(this.contentRef, 0.3, { autoAlpha: 0, ease, delay: 0.8 });
     TweenMax.to(this.cupRef, 0.5, { autoAlpha: 0, scale: 0, ease, delay: 0.3 });
     TweenMax.to(this.buttonRef, 0.5, { autoAlpha: 0, y: 50, ease, delay: 0.3 });

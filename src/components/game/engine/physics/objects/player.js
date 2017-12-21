@@ -13,7 +13,13 @@ import params from '../../params';
 export const PLAYER_MATERIAL_NAME = 'playerMaterial';
 export const material = new CANNON.Material(PLAYER_MATERIAL_NAME);
 
-export default function createPlayer({ type, position, onCollide = identity, onFinish = identity }, audio) {
+export default function createPlayer({
+  type,
+  position,
+  onCollide = identity,
+  onFinish = identity,
+  onBoostCollect = identity,
+}, audio) {
   let speedModifierTimeoutId = null;
 
   let puddleCollisionFilter = false;
@@ -43,8 +49,8 @@ export default function createPlayer({ type, position, onCollide = identity, onF
   };
 
   const handleNitroCollide = (body) => {
+    player.userData.nitros += 1;
     player.userData.nitrosToRemove.push(body);
-    modifySpeed(params.BOOSTED_SPEED, params.BOOSTED_SPEED_INTERVAL);
   };
 
   const handlePuddleCollide = (body) => {
@@ -71,7 +77,8 @@ export default function createPlayer({ type, position, onCollide = identity, onF
     switch (body.material.name) {
       case NITRO_MATERIAL_NAME:
         handleNitroCollide(body);
-        audio.sounds.nitro.play();
+        onBoostCollect(type, player.userData.nitros);
+        audio.sounds.collect.play();
         break;
       case PUDDLE_MATERIAL_NAME:
         handlePuddleCollide(body);
@@ -99,9 +106,19 @@ export default function createPlayer({ type, position, onCollide = identity, onF
   player.userData = {
     type,
     speed: 0,
+    nitros: params.INITIAL_NITROS,
     nitrosToRemove: [],
     puddlesToExplode: [],
     rotation: 0,
+    useBoost: () => {
+      if (player.userData.nitros > 0) {
+        player.userData.nitros -= 1;
+        audio.sounds.nitro.play();
+        modifySpeed(params.BOOSTED_SPEED, params.BOOSTED_SPEED_INTERVAL);
+        return player.userData.nitros;
+      }
+      return false;
+    },
   };
 
   return player;

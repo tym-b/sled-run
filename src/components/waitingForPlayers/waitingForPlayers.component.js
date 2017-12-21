@@ -40,6 +40,8 @@ export default class WaitingForPlayer extends PureComponent {
   }
 
   animateIn = () => {
+    TweenMax.killTweensOf(this.contentRef);
+    TweenMax.killChildTweensOf(this.contentRef);
     TweenMax.fromTo(this.contentRef, 0.3, { autoAlpha: 0 }, { autoAlpha: 1, ease });
     TweenMax.fromTo(this.logoRef, 0.3, { autoAlpha: 0, y: -50 }, { autoAlpha: 1, delay: 0.3, y: 0, ease });
     TweenMax.fromTo(this.copyRef, 0.3, { autoAlpha: 0, y: 50 }, { autoAlpha: 1, delay: 0.3, y: 0, ease });
@@ -53,6 +55,8 @@ export default class WaitingForPlayer extends PureComponent {
   }
 
   animateOut = () => {
+    TweenMax.killTweensOf(this.contentRef);
+    TweenMax.killChildTweensOf(this.contentRef);
     TweenMax.fromTo(this.contentRef, 0.3, { autoAlpha: 1 }, { autoAlpha: 0, delay: 0.8, ease });
     TweenMax.fromTo(this.logoRef, 0.3, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, delay: 0.5, y: -50, ease });
     TweenMax.fromTo(this.copyRef, 0.3, { autoAlpha: 1, y: 0 }, { autoAlpha: 0, delay: 0.5, y: 50, ease });
