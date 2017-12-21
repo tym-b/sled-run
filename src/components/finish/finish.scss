@@ -1,0 +1,138 @@
+@import "../../styles/variables";
+
+.container {
+  opacity: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: $color-blue-transparent;
+  z-index: 3;
+}
+
+.logo {
+  width: 350px;
+  height: auto;
+}
+
+.content {
+  position: relative;
+  width: 49%;
+  height: 52%;
+}
+
+.cup-wrapper {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  width: 35%;
+
+  &--green{
+    left: 0;
+    top: 0;
+    bottom: auto;
+    right: auto;
+  }
+}
+
+.cup-background {
+  width: 100%;
+  height: auto;
+}
+
+.cup-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cup {
+  width: 50%;
+  height: auto;
+}
+
+.description-wrapper {
+  width: 73%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  &--green {
+    top: auto;
+    left: auto;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.description-ellipse {
+  width: 100%;
+  height: auto;
+}
+
+.description-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.description-paragraph {
+  margin: 0;
+  color: white;
+  font-size: 65px;
+  font-weight: 600;
+  padding: 0 17%;
+
+  strong {
+    color: black;
+    opacity: 0.3;
+    text-transform: capitalize;
+  }
+
+  @include big-desktop {
+    font-size: 90px;
+  }
+}
+
+.button {
+  position: absolute;
+  bottom: 5%;
+  border: 0;
+  background: none;
+  font-size: 30px;
+  color: white;
+  font-weight: 900;
+  transition: all ease-in-out .3s;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+
+  @include big-desktop {
+    font-size: 45px;
+  }
+
+  &:hover {
+    opacity: 0.8 !important;
+    transform: scale(0.8) !important;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

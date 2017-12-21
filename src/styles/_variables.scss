@@ -1,0 +1,7 @@
+$color-blue-transparent: rgba(186, 221, 241, 0.8);
+
+@mixin big-desktop {
+  @media all and (min-width: 1920px) {
+    @content;
+  }
+}
