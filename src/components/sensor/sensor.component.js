@@ -3,11 +3,19 @@ import { throttle } from 'lodash';
 import { pipe, prop, contains, ifElse, equals } from 'ramda';
 import socketio from 'socket.io-client';
 import qs from 'query-string';
-import { playersTypes } from '../../../server/helpers';
+import classnames from 'classnames';
 
+import { playersTypes } from '../../../server/helpers';
+import classes from './sensor.scss';
+
+const logo = require('../../../images/logo.svg');
 const CONNECTING = 'connecting';
 const CONNECTED = 'connected';
 const DISCONNECTED = 'disconnected';
+const colors = {
+  red: '#e53935',
+  green: '#00b971',
+};
 
 export default class Sensor extends PureComponent {
   state = {
@@ -15,6 +23,8 @@ export default class Sensor extends PureComponent {
     offset: 0,
     status: CONNECTING,
     error: '',
+    isBoosting: false,
+    canBoost: true,
   };
 
   componentDidMount() {
@@ -27,6 +37,8 @@ export default class Sensor extends PureComponent {
     this.socket.on('connect', this.handleConnect);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('detectedCollision', this.handleDetectedCollision);
+    this.socket.on('enableBoost', this.handleEnableBoost);
+    this.socket.on('disableBoost', this.handleDisableBoost);
   }
 
   componentWillUnmount() {
@@ -61,6 +73,21 @@ export default class Sensor extends PureComponent {
 
   handleCalibrate = () => this.setState(state => ({ offset: state.position }));
 
+  handleEnableBoost = () => this.setState({ canBoost: true });
+  handleDisableBoost = () => this.setState({ canBoost: false });
+
+  handleBoost = () => {
+    if (this.state.canBoost && !this.state.isBoosting) {
+      this.setState({ isBoosting: true });
+      this.socket.emit('boostUsed');
+
+      setTimeout(() => {
+        this.setState({ isBoosting: false });
+        console.log('boostUsed');
+      }, 300);
+    }
+  };
+
   renderValue = () => ifElse(
     equals(true),
     () => <h1>Position: {this.state.position}</h1>,
@@ -69,12 +96,20 @@ export default class Sensor extends PureComponent {
 
   render() {
     return (
-      <div style={{ background: this.player }}>
-        {this.renderValue()}
-        <h2>Offset: {this.state.offset}</h2>
-        <h2>Status: {this.state.status}</h2>
-        <h2>Error: {this.state.error}</h2>
-        <button style={{ padding: '100px', margin: '30px auto' }} onClick={this.handleCalibrate}>CALIBRATE</button>
+      <div className={classes.container}>
+        <img alt="" src={logo} className={classes.logo} />
+
+        <div className={classes['player-type']} style={{ background: colors[this.player] }} />
+
+        <button
+          className={classnames(
+            classes.boost,
+            { [classes['boost--disabled']]: !this.state.canBoost },
+          )}
+          onClick={this.handleBoost}
+        >
+          Boost mock
+        </button>
       </div>
     );
   }

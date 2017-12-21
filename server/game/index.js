@@ -22,7 +22,29 @@ export default class Game {
     socket.on('playerConnected', this.handlePlayerConnection(socket));
     socket.on('deviceMove', this.handleDeviceMove(id));
     socket.on('playerCollided', this.handlePlayerCollided);
+    socket.on('boostUsed', this.handleBoostUsed(id));
+    socket.on('enablePlayerBoost', this.handleEnablePlayerBoost);
+    socket.on('disablePlayerBoost', this.handleDisablePlayerBoost);
   }
+
+  handleEnablePlayerBoost = ({ type }) => {
+    console.log(`Enable boost for player: ${type}`);
+
+    this.socket.to(type).emit('enableBoost');
+  }
+
+  handleDisablePlayerBoost = ({ type }) => {
+    console.log(`Disable boost for player: ${type}`);
+
+    this.socket.to(type).emit('disableBoost');
+  }
+
+  handleBoostUsed = (id) => () => {
+    const type = getTypeById(id, this.clients);
+    console.log(`User ${type} used boost`);
+
+    this.socket.to(GAME).emit('playerUsedBoost', { type });
+  };
 
   handleClientDisconnection = (id) => () => {
     console.log(`Client with id: ${id} disconnected.`);

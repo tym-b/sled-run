@@ -26,6 +26,8 @@ export default class Game extends PureComponent {
     this.socket.on('playerConnected', this.handlePlayerConnected);
     this.socket.on('playerDisconnected', this.handlePlayerDisconnected);
     this.socket.on('deviceMoveChanged', this.handleDeviceMoveChanged);
+    this.socket.on('playerUsedBoost', this.handlePlayerUsedBoost);
+
 
     this.engine = new Engine(this.renderTarget, this.sensorData, (winner) => {
       if (!this.state.finished) {
@@ -73,6 +75,10 @@ export default class Game extends PureComponent {
 
   handleContainerRef = (ref) => (this.renderTarget = ref);
 
+  handlePlayerUsedBoost = (type) => {
+    console.log('boost used', type);
+  }
+
   isWaitingForPlayers = () => anyPass([
     propEq(`${GREEN_PLAYER}Connected`, false),
     propEq(`${RED_PLAYER}Connected`, false),
@@ -83,6 +89,9 @@ export default class Game extends PureComponent {
     propEq('finished', false),
     () => !this.isWaitingForPlayers(),
   ])(this.state)
+
+  enablePlayerBoost = (type) => this.socket.emit('enablePlayerBoost', { type });
+  disablePlayerBoost = (type) => this.socket.emit('disablePlayerBoost', { type });
 
   render = () => (
     <div>
