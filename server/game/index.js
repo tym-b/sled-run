@@ -23,20 +23,13 @@ export default class Game {
     socket.on('deviceMove', this.handleDeviceMove(id));
     socket.on('playerCollided', this.handlePlayerCollided);
     socket.on('boostUsed', this.handleBoostUsed(id));
-    socket.on('enablePlayerBoost', this.handleEnablePlayerBoost);
-    socket.on('disablePlayerBoost', this.handleDisablePlayerBoost);
+    socket.on('syncPlayerBoosts', this.handleSyncPlayerBoosts);
   }
 
-  handleEnablePlayerBoost = ({ type }) => {
-    console.log(`Enable boost for player: ${type}`);
+  handleSyncPlayerBoosts = ({ type, boostsLeft }) => {
+    console.log(`Sync boosts for player: ${type}, left ${boostsLeft} boosts`);
 
-    this.socket.to(type).emit('enableBoost');
-  }
-
-  handleDisablePlayerBoost = ({ type }) => {
-    console.log(`Disable boost for player: ${type}`);
-
-    this.socket.to(type).emit('disableBoost');
+    this.socket.to(type).emit('syncBoosts', { boostsLeft });
   }
 
   handleBoostUsed = (id) => () => {

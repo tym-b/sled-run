@@ -86,6 +86,12 @@ module.exports = {
             loader: 'less-loader'
           }]
         })
+      }, {
+        test: /\.(jpg|png|mp3|svg)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {}
+        }]
       }
     ]
   }

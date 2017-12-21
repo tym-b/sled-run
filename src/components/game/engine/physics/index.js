@@ -24,12 +24,14 @@ export default class Physics {
         position: { x: -10 },
         onCollide: this.handlePlayerCollide,
         onFinish: this.handlePlayerFinish,
+        onBoostCollect: this.handlePlayerBoostCollect,
       }, this.audio),
       createPlayer({
         type: RED_PLAYER,
         position: { x: 10 },
         onCollide: this.handlePlayerCollide,
         onFinish: this.handlePlayerFinish,
+        onBoostCollect: this.handlePlayerBoostCollect,
       }, this.audio),
     ];
 
@@ -51,6 +53,7 @@ export default class Physics {
 
   onPuddleCollideHandler = identity;
   onFinishHandler = identity;
+  onBoostUseHandler = identity;
 
   set onPuddleCollide(fn) {
     this.onPuddleCollideHandler = fn;
@@ -58,6 +61,10 @@ export default class Physics {
 
   set onFinish(fn) {
     this.onFinishHandler = fn;
+  }
+
+  set onBoostCollect(fn) {
+    this.onBoostCollectHandler = fn;
   }
 
   handlePlayerCollide = (type) => {
@@ -69,6 +76,14 @@ export default class Physics {
   handlePlayerFinish = (type) => {
     this.onFinishHandler(type);
   };
+
+  handlePlayerBoostCollect = (type, boosts) => {
+    this.onBoostCollectHandler(type, boosts);
+  };
+
+  useBoost(type) {
+    return this.players[type === GREEN_PLAYER ? 0 : 1].userData.useBoost();
+  }
 
   start = () => {
     this.players.forEach((player) => {

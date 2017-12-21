@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
-import { throttle } from 'lodash';
-import { pipe, prop, contains, ifElse, equals } from 'ramda';
+import { throttle, clamp } from 'lodash';
+import { pipe, prop, contains } from 'ramda';
 import socketio from 'socket.io-client';
 import qs from 'query-string';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import { playersTypes } from '../../../server/helpers';
+import params from '../game/engine/params';
 import classes from './sensor.scss';
 
-const logo = require('../../../images/logo.svg');
 const CONNECTING = 'connecting';
 const CONNECTED = 'connected';
 const DISCONNECTED = 'disconnected';
@@ -24,7 +24,7 @@ export default class Sensor extends PureComponent {
     status: CONNECTING,
     error: '',
     isBoosting: false,
-    canBoost: true,
+    boostsLeft: params.INITIAL_NITROS,
   };
 
   componentDidMount() {
@@ -37,8 +37,7 @@ export default class Sensor extends PureComponent {
     this.socket.on('connect', this.handleConnect);
     this.socket.on('disconnect', this.handleDisconnect);
     this.socket.on('detectedCollision', this.handleDetectedCollision);
-    this.socket.on('enableBoost', this.handleEnableBoost);
-    this.socket.on('disableBoost', this.handleDisableBoost);
+    this.socket.on('syncBoosts', this.handleSyncBoosts);
   }
 
   componentWillUnmount() {
@@ -64,52 +63,53 @@ export default class Sensor extends PureComponent {
     }
   }
 
+  get position() {
+    return this.state.position - this.state.offset;
+  }
+
   emitPosition = throttle((position) => {
     this.setState({ position });
-    this.socket.emit('deviceMove', { position: position - this.state.offset });
+    this.socket.emit('deviceMove', { position: this.position });
   }, 30);
 
   handleOrientation = pipe(prop('beta'), this.handlePositionChange);
 
   handleCalibrate = () => this.setState(state => ({ offset: state.position }));
 
-  handleEnableBoost = () => this.setState({ canBoost: true });
-  handleDisableBoost = () => this.setState({ canBoost: false });
+  handleSyncBoosts = ({ boostsLeft }) => this.setState({ boostsLeft });
 
   handleBoost = () => {
-    if (this.state.canBoost && !this.state.isBoosting) {
+    this.setState({ boostsLeft: this.state.boostsLeft - 1 });
+    return;
+    if (this.state.boostsLeft > 0 && !this.state.isBoosting) {
       this.setState({ isBoosting: true });
       this.socket.emit('boostUsed');
-
-      setTimeout(() => {
-        this.setState({ isBoosting: false });
-        console.log('boostUsed');
-      }, 300);
+      setTimeout(() => this.setState({ isBoosting: false }), 1000);
     }
   };
-
-  renderValue = () => ifElse(
-    equals(true),
-    () => <h1>Position: {this.state.position}</h1>,
-    () => <h1>Invalid player type</h1>,
-  )(this.canPlay);
 
   render() {
     return (
       <div className={classes.container}>
-        <img alt="" src={logo} className={classes.logo} />
-
-        <div className={classes['player-type']} style={{ background: colors[this.player] }} />
-
-        <button
-          className={classnames(
-            classes.boost,
-            { [classes['boost--disabled']]: !this.state.canBoost },
-          )}
-          onClick={this.handleBoost}
-        >
-          Boost mock
-        </button>
+        <div className={classes.playerType} style={{ background: colors[this.player] }}>
+          <div
+            className={classes.pointerLeft}
+            style={{ transform: `scaleY(${clamp(this.position, -10, 0) * -0.1})` }}
+          />
+          <div
+            className={classes.pointerRight}
+            style={{ transform: `scaleY(${clamp(this.position, 0, 10) * 0.1})` }}
+          />
+          <button className={classes.calibrateButton} onClick={this.handleCalibrate}>
+            calibrate
+          </button>
+        </div>
+        <div className={classes.boostsContainer}>
+          <div
+            className={classNames(classes.boost, { [classes.boostActive]: this.state.boostsLeft > 0 })}
+            onClick={this.handleBoost}
+          />
+        </div>
       </div>
     );
   }

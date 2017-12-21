@@ -28,11 +28,12 @@ export default class Game extends PureComponent {
     this.socket.on('deviceMoveChanged', this.handleDeviceMoveChanged);
     this.socket.on('playerUsedBoost', this.handlePlayerUsedBoost);
 
-
     this.engine = new Engine(this.renderTarget, this.sensorData, (winner) => {
       if (!this.state.finished) {
         this.setState({ finished: true, winner });
       }
+    }, (type, boostsLeft) => {
+      this.socket.emit('syncPlayerBoosts', { type, boostsLeft });
     });
 
     window.addEventListener('resize', this.engine.updateViewport);
@@ -62,6 +63,10 @@ export default class Game extends PureComponent {
   handleConnect = () => this.socket.emit('gameConnected');
   handlePlayerConnected = ({ type }) => this.setState({ [`${type}Connected`]: true });
   handlePlayerDisconnected = ({ type }) => this.setState({ [`${type}Connected`]: false });
+  handlePlayerUsedBoost = (type) => {
+    const boostsLeft = this.engine.useBoost(type);
+    this.socket.emit('syncPlayerBoosts', { type, boostsLeft });
+  };
   handleDeviceMoveChanged = (data) => {
     const { type } = data;
     const stateProp = `${type}Connected`;
@@ -75,10 +80,6 @@ export default class Game extends PureComponent {
 
   handleContainerRef = (ref) => (this.renderTarget = ref);
 
-  handlePlayerUsedBoost = (type) => {
-    console.log('boost used', type);
-  }
-
   isWaitingForPlayers = () => anyPass([
     propEq(`${GREEN_PLAYER}Connected`, false),
     propEq(`${RED_PLAYER}Connected`, false),
@@ -88,21 +89,20 @@ export default class Game extends PureComponent {
     propEq('gameLoaded', true),
     propEq('finished', false),
     () => !this.isWaitingForPlayers(),
-  ])(this.state)
+  ])(this.state);
 
-  enablePlayerBoost = (type) => this.socket.emit('enablePlayerBoost', { type });
-  disablePlayerBoost = (type) => this.socket.emit('disablePlayerBoost', { type });
-
-  render = () => (
-    <div>
-      <WaitingForPlayers isVisible={this.isWaitingForPlayers()} gameLoaded={this.state.gameLoaded} />
-      <Start
-        isVisible={this.canStartGame()}
-        onStartClick={() => this.engine.playCounter()}
-        onCounterFinish={this.start}
-      />
-      <Finish isVisible={this.state.finished} onRestartClick={this.reset} player={this.state.winner} />
-      <div ref={this.handleContainerRef} />
-    </div>
-  );
+  render = () => {
+    return (
+      <div>
+        <WaitingForPlayers isVisible={this.isWaitingForPlayers()} gameLoaded={this.state.gameLoaded} />
+        <Start
+          isVisible={this.canStartGame()}
+          onStartClick={() => this.engine.playCounter()}
+          onCounterFinish={this.start}
+        />
+        <Finish isVisible={this.state.finished} onRestartClick={this.reset} player={this.state.winner} />
+        <div ref={this.handleContainerRef} />
+      </div>
+    );
+  }
 }
