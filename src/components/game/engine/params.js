@@ -8,7 +8,7 @@ const params = {
   BOOSTED_SPEED_INTERVAL: 1500,
   REDUCED_SPEED: 100,
   REDUCED_SPEED_INTERVAL: 500,
-  INITIAL_NITROS: 1,
+  INITIAL_NITROS: 0,
 };
 
 export default params;
