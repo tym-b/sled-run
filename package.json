@@ -1,15 +1,10 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "sled-run",
+  "version": "1.0.1",
   "scripts": {
     "start": "webpack-dev-server --hot --port 3002 --host 0.0.0.0",
     "server": "babel-watch ./server/main",
     "production": "babel-node ./server/main",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "postinstall": "npm run build",
     "eslint": "eslint .",
     "build": "cross-env NODE_ENV=production webpack --config ./webpack.production.js --progress --profile --colors",
     "surge": "rm -rf dist && npm run build && cp dist/index.html dist/200.html && surge dist"
@@ -18,21 +13,8 @@
     "node": "6.6.0",
     "npm": "3.10.3"
   },
-  "jest": {
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
-    "moduleNameMapper": {
-      "^.+\\.(css)$": "identity-obj-proxy"
-    },
-    "setupTestFrameworkScriptFile": "<rootDir>/src/test/setup.js"
-  },
-  "author": "We're in <wereinhq.com>",
-  "license": "ISC",
   "devDependencies": {
     "babel-eslint": "^8.0.1",
-    "babel-jest": "^21.2.0",
     "babel-plugin-react-transform": "^3.0.0",
     "babel-watch": "^2.0.7",
     "cross-env": "^5.0.5",
@@ -45,7 +27,6 @@
     "eslint-plugin-react": "^7.4.0",
     "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^0.7.1",
-    "jest-cli": "^21.2.1",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.0.0",
     "react-transform-catch-errors": "^1.0.2",
