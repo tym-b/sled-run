@@ -50,7 +50,7 @@ export default class Sensor extends PureComponent {
 
   handleDisconnect = () => this.setState({ status: DISCONNECTED });
 
-  handleDetectedCollision = () => navigator.vibrate([150, 50, 300]);
+  handleDetectedCollision = () => {};
 
   handleConnect = () => {
     this.setState({ status: CONNECTED });
@@ -79,8 +79,6 @@ export default class Sensor extends PureComponent {
   handleSyncBoosts = ({ boostsLeft }) => this.setState({ boostsLeft });
 
   handleBoost = () => {
-    this.setState({ boostsLeft: this.state.boostsLeft - 1 });
-    return;
     if (this.state.boostsLeft > 0 && !this.state.isBoosting) {
       this.setState({ isBoosting: true });
       this.socket.emit('boostUsed');
@@ -91,6 +89,12 @@ export default class Sensor extends PureComponent {
   render() {
     return (
       <div className={classes.container}>
+        <div className={classes.boostsContainer}>
+          <div
+            className={classNames(classes.boost, { [classes.boostActive]: this.state.boostsLeft > 0 })}
+            onClick={this.handleBoost}
+          />
+        </div>
         <div className={classes.playerType} style={{ background: colors[this.player] }}>
           <div
             className={classes.pointerLeft}
@@ -103,12 +107,6 @@ export default class Sensor extends PureComponent {
           <button className={classes.calibrateButton} onClick={this.handleCalibrate}>
             calibrate
           </button>
-        </div>
-        <div className={classes.boostsContainer}>
-          <div
-            className={classNames(classes.boost, { [classes.boostActive]: this.state.boostsLeft > 0 })}
-            onClick={this.handleBoost}
-          />
         </div>
       </div>
     );

@@ -63,7 +63,7 @@ export default class Game extends PureComponent {
   handleConnect = () => this.socket.emit('gameConnected');
   handlePlayerConnected = ({ type }) => this.setState({ [`${type}Connected`]: true });
   handlePlayerDisconnected = ({ type }) => this.setState({ [`${type}Connected`]: false });
-  handlePlayerUsedBoost = (type) => {
+  handlePlayerUsedBoost = ({ type }) => {
     const boostsLeft = this.engine.useBoost(type);
     this.socket.emit('syncPlayerBoosts', { type, boostsLeft });
   };
